@@ -10,9 +10,9 @@ import CPU.Register.Register;
  * ALU will do the effective address computation
  *
  * @author Charles
- */
 
 
+**/
 public class ALU {
     private Register IAR;
     private Register IRR;

@@ -1,6 +1,7 @@
 package CPU;
 
 import CPU.Register.*;
+import Memory.Memory;
 
 /***
  * This is the class for Decoder.
@@ -10,6 +11,7 @@ import CPU.Register.*;
  *
  * @author Charles
  */
+
 public class Decoder {
     private String label;
     private int opcode;
@@ -21,13 +23,14 @@ public class Decoder {
     public Decoder(){
         this.label="Decoder";
         this.opcode=-1;
+        this.R = -1;
         this.IX=-1;
         this.I=-1;
         this.address=-1;
     }
 
     //This function is used in Locate And Fetch Operand Data step
-    public void decoding(ALU alu, InstructionRegister ir, MemoryAddressRegister mar, MemoryBufferRegister mbr, IndexRegister X1, IndexRegister X2, IndexRegister X3){
+    public void decoding(ALU alu, Memory mem, InstructionRegister ir, MemoryAddressRegister mar, MemoryBufferRegister mbr, IndexRegister X1, IndexRegister X2, IndexRegister X3){
         String instruction = Integer.toBinaryString(ir.getValue());
 
         while(instruction.length()<16){
@@ -46,9 +49,9 @@ public class Decoder {
 
         switch (opcode){
             //LDR
-            case 1 -> mbr.getFromMem(mar.getValue());
+            case 1 -> mbr.getFromMem(mar,mem);
             //LDX
-            case 41 -> mbr.getFromMem(mar.getValue());
+            case 41 -> mbr.getFromMem(mar,mem);
             // STR, LDA, STX won't react with memory at this step
             // using switch statement in case to add more opcode
         }
@@ -90,7 +93,7 @@ public class Decoder {
     }
 
     //This function is used in Deposit Results step
-    public void depositing(ALU alu, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X0,IndexRegister X1, IndexRegister X2){
+    public void depositing(ALU alu,Memory mem,MemoryAddressRegister mar,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X0,IndexRegister X1, IndexRegister X2){
         switch (this.opcode){
             case -1 ->{
                 //error
@@ -104,10 +107,10 @@ public class Decoder {
                     case 3 -> R3.setValue(alu.getIRRValue());
                 }
             }
-            //STR
-            case 2 ->{
-                //set value of IRR to MEM[EA]
-                //EA is stored in IAR in ALU
+            //STR & STX
+            case 2, 42 ->{
+                mbr.setValue(alu.getIRRValue());
+                mbr.storeToMem(mar,mem);
             }
             //LDX
             case 41 ->{
@@ -118,10 +121,6 @@ public class Decoder {
                 }
             }
             //STX
-             case 42 ->{
-                 //set value of IRR to MEM[EA]
-                 //EA is stored in IAR in ALU
-             }
         }
     }
 

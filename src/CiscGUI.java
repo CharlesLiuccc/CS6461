@@ -8,7 +8,12 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.Locale;
+import java.io.File;
+import java.util.Scanner;
+
 
 /***
  * Here is the layout for the Graphical User Interface.
@@ -53,7 +58,7 @@ public class CiscGUI {
     private JLabel mbrLabel;
     private JLabel irLabel;
     private JLabel mfrLabel;
-    private JTextField mdrTextField;
+    private JTextField mbrTextField;
     private JTextField irTextField;
     private JTextField mfrTextField;
     private JPanel opcodePanel;
@@ -84,10 +89,16 @@ public class CiscGUI {
     private JTextField iTextField;
     private JTextField addressTextField;
     private JButton iplButton;
+    private JButton loadButton;
+    private JButton stButton;
+    private JButton storeButton;
     private JPanel gprPanel;
     private JPanel ixrPanel;
     private JPanel iPanel;
     private JPanel addressPanel;
+    private JButton stButton1;
+    private JButton runButton;
+    private JButton ssButton;
     private JTextField inputTextField;
     private JPanel inputPanel;
     private JLabel inputLabel;
@@ -111,7 +122,32 @@ public class CiscGUI {
         iplButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ixr1TextField.setText("Hello");
+                File file = new File("ProjectFolder/src/ipl.txt");
+                Scanner sc = null;
+                try {
+                    sc = new Scanner(file);
+                } catch (FileNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+
+                int firstInstruction = 6;
+                boolean first = true;
+                while(sc.hasNextLine()) {
+                    String str = sc.nextLine().trim();
+                    int address = Integer.parseInt(str.substring(0,4),16);
+                    int data = Integer.parseInt(str.substring(5,9),16);
+                    if(first) {
+                        firstInstruction = address;
+                        first = false;
+                    }
+                    System.out.println(address);
+                    System.out.println(data);
+                    System.out.println(firstInstruction);
+                    //TODO use Memory.SetMEM(address,data)
+                    //Main.pc.setValue(firstInstruction);
+                    UpdateGUI();
+                }
+
             }
         });
         oneButton.addActionListener(new ActionListener() {
@@ -325,7 +361,19 @@ public class CiscGUI {
     }
 
     public void UpdateGUI(){
-        //TODO update GUI functionality
+        //Integer.toBinaryString(value | 0x10000).substring(1)
+        gpr0TextField.setText(Integer.toBinaryString(Main.gpr0.getValue() | 0x10000).substring(1));
+        gpr1TextField.setText(Integer.toBinaryString(Main.gpr1.getValue()| 0x10000).substring(1));
+        gpr2TextField.setText(Integer.toBinaryString(Main.gpr2.getValue()| 0x10000).substring(1));
+        gpr3TextField.setText(Integer.toBinaryString(Main.gpr3.getValue()| 0x10000).substring(1));
+        ixr1TextField.setText(Integer.toBinaryString(Main.x1.getValue()| 0x10000).substring(1));
+        ixr2TextField.setText(Integer.toBinaryString(Main.x2.getValue()| 0x10000).substring(1));
+        ixr3TextField.setText(Integer.toBinaryString(Main.x3.getValue()| 0x10000).substring(1));
+        pcTextField.setText(Integer.toBinaryString(Main.pc.getValue()| 0x1000).substring(1));
+        marTextField.setText(Integer.toBinaryString(Main.mar.getValue()| 0x1000).substring(1));
+        mbrTextField.setText(Integer.toBinaryString(Main.mbr.getValue()| 0x10000).substring(1));
+        irTextField.setText(Integer.toBinaryString(Main.ir.getValue()| 0x10000).substring(1));
+        mfrTextField.setText(Integer.toBinaryString(Main.mfr.getValue()| 0x10).substring(1));
     }
 
     private void PrintOperation(){
@@ -378,6 +426,7 @@ public class CiscGUI {
     }
 
 
-
-
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
 }
