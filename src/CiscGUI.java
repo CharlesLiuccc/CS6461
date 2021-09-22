@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.Locale;
 import java.io.File;
+import java.util.Objects;
 import java.util.Scanner;
 
 
@@ -90,15 +91,16 @@ public class CiscGUI {
     private JTextField addressTextField;
     private JButton iplButton;
     private JButton loadButton;
-    private JButton stButton;
     private JButton storeButton;
     private JPanel gprPanel;
     private JPanel ixrPanel;
     private JPanel iPanel;
     private JPanel addressPanel;
-    private JButton stButton1;
     private JButton runButton;
     private JButton ssButton;
+    private JButton memoryGUIButton;
+    private JTextField offTextField;
+    private JPanel BottomPanel;
     private JTextField inputTextField;
     private JPanel inputPanel;
     private JLabel inputLabel;
@@ -122,7 +124,7 @@ public class CiscGUI {
         iplButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                File file = new File("ProjectFolder/src/ipl.txt");
+                File file = new File("src/ipl.txt");
                 Scanner sc = null;
                 try {
                     sc = new Scanner(file);
@@ -350,6 +352,40 @@ public class CiscGUI {
                 pcTextField.setText(Integer.toBinaryString(value | 0x1000).substring(1));
             }
         });
+        storeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int value = ConvertArrayToInt();
+                //TODO Send this to computer to execute
+            }
+        });
+        loadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int value = ConvertArrayToInt();
+                //TODO send this to computer to execute
+            }
+        });
+        ssButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (Objects.equals(offTextField.getText(), "ON")) {
+                    offTextField.setText("OFF");
+                    Main.SingleStep = false;
+                }
+
+                else{
+                    offTextField.setText("ON");
+                    Main.SingleStep = true;
+                }
+            }
+        });
+        memoryGUIButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MemoryGUI.CreateMemoryGUI();
+            }
+        });
     }
 
     public void CreateandShowGUI() {
@@ -426,7 +462,5 @@ public class CiscGUI {
     }
 
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
+
 }

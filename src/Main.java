@@ -1,4 +1,5 @@
 import CPU.Register.*;
+import Memory.Memory;
 
 public class Main {
     public static ProgramCounter pc = new ProgramCounter();
@@ -15,6 +16,8 @@ public class Main {
     public static GeneralPurposeRegister gpr3 = new GeneralPurposeRegister(0);
     public static ConditionCode cc = new ConditionCode();
     public static CiscGUI theGui = new CiscGUI();
+    public static Memory mem = new Memory();
+    public static boolean SingleStep = false;
 
     public static void main(String[] args) {
         theGui.CreateandShowGUI();
