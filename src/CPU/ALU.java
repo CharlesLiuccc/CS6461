@@ -3,6 +3,7 @@ package CPU;
 import CPU.Register.GeneralPurposeRegister;
 import CPU.Register.IndexRegister;
 import CPU.Register.Register;
+import Memory.Memory;
 
 /***
  * This is the class for ALU.
@@ -25,8 +26,9 @@ public class ALU {
         this.label="ALU";
     }
 
-    public int getFromMem(int address){
-        return 0;
+
+    public int getFromMem(int address, Memory mem){
+        return mem.getFromMemory(address);
     }
 
     public int getFromIXR(IndexRegister IX){
@@ -50,7 +52,7 @@ public class ALU {
     }
 
     //this function is used to compute the Effective address and store it to IAR
-    public void computeEA(int IX, int I,IndexRegister X1,IndexRegister X2,IndexRegister X3){
+    public void computeEA(int IX, int I,Memory mem, IndexRegister X1,IndexRegister X2,IndexRegister X3){
         int EA = 0;
         if(I==0){
             switch (IX) {
@@ -62,10 +64,10 @@ public class ALU {
         }
         else if(I==1){
             switch (IX){
-                case 0 -> EA = getFromMem(this.IAR.getValue());
-                case 1 -> EA = getFromMem(getFromIXR(X1)+this.IAR.getValue());
-                case 2 -> EA = getFromMem(getFromIXR(X2)+this.IAR.getValue());
-                case 3 -> EA = getFromMem(getFromIXR(X3)+this.IAR.getValue());
+                case 0 -> EA = getFromMem(this.IAR.getValue(),mem);
+                case 1 -> EA = getFromMem(getFromIXR(X1)+this.IAR.getValue(),mem);
+                case 2 -> EA = getFromMem(getFromIXR(X2)+this.IAR.getValue(),mem);
+                case 3 -> EA = getFromMem(getFromIXR(X3)+this.IAR.getValue(),mem);
             }
         }
         else{

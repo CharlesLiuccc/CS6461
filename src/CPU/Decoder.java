@@ -44,7 +44,7 @@ public class Decoder {
         this.address = Integer.parseInt(instruction.substring(11,16));
 
         alu.setIAR(this.address);
-        alu.computeEA(this.IX,this.I,X1,X2,X3);
+        alu.computeEA(this.IX,this.I,mem,X1,X2,X3);
         mar.setValue(alu.getIARValue());
 
         switch (opcode){
