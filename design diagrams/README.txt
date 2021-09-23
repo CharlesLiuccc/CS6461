@@ -9,6 +9,9 @@ LDR flow chart
 STX flow chart
 LDX flow chart
 
+buttonLogic-IPL flow chart
+buttonLogic-Run flow chart
+buttonLogic-LOAD&STORE flow chart
 =============================================================
 HOW TO USE
 
