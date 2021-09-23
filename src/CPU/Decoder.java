@@ -37,14 +37,16 @@ public class Decoder {
             instruction="0"+ instruction;
         }
 
-        this.opcode=Integer.parseInt(instruction.substring(0,6));
-        this.R = Integer.parseInt(instruction.substring(6,8));
-        this.IX = Integer.parseInt(instruction.substring(8,10));
-        this.I = Integer.parseInt(instruction.substring(10,11));
-        this.address = Integer.parseInt(instruction.substring(11,16));
+        this.opcode=Integer.parseInt(instruction.substring(0,6),2);
+        this.R = Integer.parseInt(instruction.substring(6,8),2);
+        this.IX = Integer.parseInt(instruction.substring(8,10),2);
+        this.I = Integer.parseInt(instruction.substring(10,11),2);
+        this.address = Integer.parseInt(instruction.substring(11,16),2);
 
         alu.setIAR(this.address);
+//        System.out.println(alu.getIARValue());
         alu.computeEA(this.IX,this.I,mem,X1,X2,X3);
+//        System.out.println(alu.getIARValue());
         mar.setValue(alu.getIARValue());
 
         switch (opcode){
@@ -58,7 +60,7 @@ public class Decoder {
     }
 
     //This function is used in Execute the Operation step
-    public void executing(ALU alu,MemoryAddressRegister mar, MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X0,IndexRegister X1, IndexRegister X2){
+    public void executing(ALU alu,MemoryAddressRegister mar, MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3){
         switch (this.opcode) {
             case -1 -> {
                 //error
@@ -83,9 +85,9 @@ public class Decoder {
             //STX
             case 42 -> {
                 switch (IX) {
-                    case 0 -> alu.setIRR(X0.getValue());
                     case 1 -> alu.setIRR(X1.getValue());
                     case 2 -> alu.setIRR(X2.getValue());
+                    case 3 -> alu.setIRR(X3.getValue());
                 }
             }
         }
@@ -93,7 +95,7 @@ public class Decoder {
     }
 
     //This function is used in Deposit Results step
-    public void depositing(ALU alu,Memory mem,MemoryAddressRegister mar,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X0,IndexRegister X1, IndexRegister X2){
+    public void depositing(ALU alu,Memory mem,MemoryAddressRegister mar,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3){
         switch (this.opcode){
             case -1 ->{
                 //error
@@ -115,9 +117,9 @@ public class Decoder {
             //LDX
             case 41 ->{
                 switch (IX){
-                    case 0 -> X0.setValue(alu.getIRRValue());
-                    case 1 -> X1.setValue(alu.getIRRValue());
-                    case 2 -> X2.setValue(alu.getIRRValue());
+                    case 0 -> X1.setValue(alu.getIRRValue());
+                    case 1 -> X2.setValue(alu.getIRRValue());
+                    case 2 -> X3.setValue(alu.getIRRValue());
                 }
             }
             //STX

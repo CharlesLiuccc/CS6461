@@ -6,6 +6,7 @@ package CPU.Register;
  *
  * @author Charles
  */
+
 public class ConditionCode extends Register{
     public ConditionCode(){
         super(4,1,"CC");

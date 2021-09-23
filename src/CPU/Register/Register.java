@@ -7,6 +7,7 @@ package CPU.Register;
  *
  * @author Charles
  */
+
 public class Register {
     private int size;
     private int value;
@@ -42,10 +43,11 @@ public class Register {
     }
 
     public void setValue(int value) {
-        if(!checkOverflow(value,this.size)) {
-            this.value = value;
-        }
-        else
-            this.value=2^this.size;
+//        if(!checkOverflow(value,this.size)) {
+//            this.value = value;
+//        }
+//        else
+//            this.value=2^this.size;
+        this.value =value;
     }
 }

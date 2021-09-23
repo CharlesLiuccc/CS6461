@@ -8,7 +8,6 @@ package Memory;
  * @author Charles
  */
 
-
 public class Memory {
     private int[] memory;
     private int size;
