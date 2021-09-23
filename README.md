@@ -19,7 +19,7 @@ STX 2, 1, 24	(I want to use X1 to calculate the EA)
 
 LDA 1, 1, 24
 
-LDR 2, 2, 16, 1
+LDR 2, 2, 26, 1
 
 STR 1, 2, 20, 1
 
@@ -28,5 +28,7 @@ STR 1, 2, 20, 1
 Mem[20] = 50
 
 Mem[40] = 10086
+
+Mem[50] = 40
 
 Mem[70] = 24
