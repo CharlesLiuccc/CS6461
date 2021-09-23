@@ -360,7 +360,7 @@ public class CiscGUI {
 
                 if(start == 2 || start == 42 ) //All valid load operations
                 {
-                    //Todo send Instruction to be executed
+                    Main.loadAndStore(ConvertArrayToInt());
                 }
 
                 else GUIError();
@@ -379,7 +379,7 @@ public class CiscGUI {
 
                 if(start == 1 || start == 3 || start == 41 ) //All valid load operations
                 {
-                    //Todo send Instruction to be executed
+                    Main.loadAndStore(ConvertArrayToInt());
                 }
 
                 else GUIError();
@@ -388,6 +388,7 @@ public class CiscGUI {
         ssButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Main.singleStep();
 
             }
         });

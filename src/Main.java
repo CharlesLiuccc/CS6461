@@ -39,7 +39,7 @@ public class Main {
      *
      * @author Charles
      */
-    public void singleStep(){
+    public static void singleStep(){
         //instruction fetch
         mar.getFromPC(pc);
         mbr.getFromMem(mar,mem);
@@ -67,7 +67,7 @@ public class Main {
      *
      * @author Charles
      */
-    public void loadAndStore(int inst){
+    public static void loadAndStore(int inst){
         HALT=false;
         ir.setValue(inst);
         decoder.decoding(HALT,alu,mem,ir,mar,mbr,x1,x2,x3);
