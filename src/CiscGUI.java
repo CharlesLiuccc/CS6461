@@ -99,8 +99,10 @@ public class CiscGUI {
     private JButton runButton;
     private JButton ssButton;
     private JButton memoryGUIButton;
-    private JTextField offTextField;
     private JPanel BottomPanel;
+    private JTextArea consoleTextArea;
+    private JPanel consolePanel;
+    private JScrollPane consoleScrollPane;
     private JTextField inputTextField;
     private JPanel inputPanel;
     private JLabel inputLabel;
@@ -124,6 +126,7 @@ public class CiscGUI {
         iplButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                consoleTextArea.setText("");
                 File file = new File("src/ipl.txt");
                 Scanner sc = null;
                 try {
@@ -132,21 +135,14 @@ public class CiscGUI {
                     ex.printStackTrace();
                 }
 
-                int firstInstruction = 6;
-                boolean first = true;
+                Main.pc.setValue(6); //Assume first instruction is at 6 every time
                 while(sc.hasNextLine()) {
                     String str = sc.nextLine().trim();
                     int address = Integer.parseInt(str.substring(0,4),16);
                     int data = Integer.parseInt(str.substring(5,9),16);
-                    if(first) {
-                        firstInstruction = address;
-                        first = false;
-                    }
-                    System.out.println(address);
-                    System.out.println(data);
-                    System.out.println(firstInstruction);
+
                     //TODO use Memory.SetMEM(address,data)
-                    //Main.pc.setValue(firstInstruction);
+                    Main.mem.setToMemory(address,data);
                     UpdateGUI();
                 }
 
@@ -355,35 +351,67 @@ public class CiscGUI {
         storeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int value = ConvertArrayToInt();
                 //TODO Send this to computer to execute
+                int start = guiArray[0];
+                for(int i = 1; i < 6; i++){
+                    start = start << 1;
+                    start = (start | guiArray[i]);
+                }
+
+                if(start == 2 || start == 42 ) //All valid load operations
+                {
+                    //Todo send Instruction to be executed
+                }
+
+                else GUIError();
             }
         });
         loadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int value = ConvertArrayToInt();
                 //TODO send this to computer to execute
+                //Will calculate Opcode
+                int start = guiArray[0];
+                for(int i = 1; i < 6; i++){
+                    start = start << 1;
+                    start = (start | guiArray[i]);
+                }
+
+                if(start == 1 || start == 3 || start == 41 ) //All valid load operations
+                {
+                    //Todo send Instruction to be executed
+                }
+
+                else GUIError();
             }
         });
         ssButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (Objects.equals(offTextField.getText(), "ON")) {
-                    offTextField.setText("OFF");
-                    Main.SingleStep = false;
-                }
 
-                else{
-                    offTextField.setText("ON");
-                    Main.SingleStep = true;
-                }
             }
         });
         memoryGUIButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MemoryGUI.CreateMemoryGUI();
+                consoleTextArea.setText("");
+                consoleTextArea.append("GPR0: " + Integer.toBinaryString(Main.gpr0.getValue()) + "\n");
+                consoleTextArea.append("GPR1: " + Integer.toBinaryString(Main.gpr1.getValue()) + "\n");
+                consoleTextArea.append("GPR2: " + Integer.toBinaryString(Main.gpr2.getValue()) + "\n");
+                consoleTextArea.append("GPR3: " + Integer.toBinaryString(Main.gpr3.getValue()) + "\n");
+                consoleTextArea.append("IXR1: " + Integer.toBinaryString(Main.x1.getValue()) + "\n");
+                consoleTextArea.append("IXR2: " + Integer.toBinaryString(Main.x2.getValue()) + "\n");
+                consoleTextArea.append("IXR3: " + Integer.toBinaryString(Main.x3.getValue()) + "\n");
+                consoleTextArea.append("PC: " + Integer.toBinaryString(Main.pc.getValue()) + "\n");
+                consoleTextArea.append("MAR: " + Integer.toBinaryString(Main.mar.getValue()) + "\n");
+                consoleTextArea.append("MBR: " + Integer.toBinaryString(Main.mbr.getValue()) + "\n");
+                consoleTextArea.append("IR: " + Integer.toBinaryString(Main.ir.getValue()) + "\n");
+                consoleTextArea.append("MFR: " + Integer.toBinaryString(Main.mfr.getValue()) + "\n");
+                for(int i = 0; i < 2048; i++)
+                {
+                    consoleTextArea.append("Address:" + i + "   ");
+                    consoleTextArea.append(Integer.toBinaryString(Main.mem.getFromMemory(i)) + "\n");
+                }
             }
         });
     }
@@ -461,6 +489,19 @@ public class CiscGUI {
 
     }
 
+    private void GUIError(){
+        for(int i = 0; i < 16; i++)
+            guiArray[i] = 0;
+        PrintOperation();
+        PrintGPR();
+        PrintIXR();
+        PrintI();
+        PrintAddress();
+        consoleTextArea.setText("Error - Invalid Instruction - Click IPL to restart\n");
+        UpdateGUI();
+
+
+    }
 
 
 }
