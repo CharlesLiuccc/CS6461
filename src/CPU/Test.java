@@ -29,12 +29,14 @@ public class Test {
 //        mem.setToMemory(20,14);
 //
 //        pc.setValue(6);
+
 //        mar.getFromPC(pc);
 //        mbr.getFromMem(mar,mem);
 //        ir.getFromMBR(mbr);
 //        decoder.decoding(alu,mem,ir,mar,mbr,x1,x2,x3);
 //        decoder.executing(alu,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
 //        decoder.depositing(alu,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
+
 //        System.out.println(mem.getFromMemory(14));
 
 

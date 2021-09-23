@@ -30,7 +30,7 @@ public class Decoder {
     }
 
     //This function is used in Locate And Fetch Operand Data step
-    public void decoding(ALU alu, Memory mem, InstructionRegister ir, MemoryAddressRegister mar, MemoryBufferRegister mbr, IndexRegister X1, IndexRegister X2, IndexRegister X3){
+    public void decoding(boolean HALT,ALU alu, Memory mem, InstructionRegister ir, MemoryAddressRegister mar, MemoryBufferRegister mbr, IndexRegister X1, IndexRegister X2, IndexRegister X3){
         String instruction = Integer.toBinaryString(ir.getValue());
 
         while(instruction.length()<16){
@@ -43,19 +43,24 @@ public class Decoder {
         this.I = Integer.parseInt(instruction.substring(10,11),2);
         this.address = Integer.parseInt(instruction.substring(11,16),2);
 
-        alu.setIAR(this.address);
+        if(opcode == 0){
+            HALT = true;
+        }
+        else {
+            alu.setIAR(this.address);
 //        System.out.println(alu.getIARValue());
-        alu.computeEA(this.IX,this.I,mem,X1,X2,X3);
+            alu.computeEA(this.IX, this.I, mem, X1, X2, X3);
 //        System.out.println(alu.getIARValue());
-        mar.setValue(alu.getIARValue());
+            mar.setValue(alu.getIARValue());
 
-        switch (opcode){
-            //LDR
-            case 1 -> mbr.getFromMem(mar,mem);
-            //LDX
-            case 41 -> mbr.getFromMem(mar,mem);
-            // STR, LDA, STX won't react with memory at this step
-            // using switch statement in case to add more opcode
+            switch (opcode) {
+                //LDR
+                case 1 -> mbr.getFromMem(mar, mem);
+                //LDX
+                case 41 -> mbr.getFromMem(mar, mem);
+                // STR, LDA, STX won't react with memory at this step
+                // using switch statement in case to add more opcode
+            }
         }
     }
 
