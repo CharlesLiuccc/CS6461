@@ -49,7 +49,7 @@ public class Decoder {
         this.address = Integer.parseInt(instruction.substring(11,16),2);
 
         if(opcode == 0){
-            System.out.println("decoder:"+HALT);
+            //System.out.println("decoder:"+HALT);
         }
         else {
             alu.setIAR(this.address);
