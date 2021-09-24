@@ -28,9 +28,15 @@ public class Main {
     public static boolean SingleStep = false;
     public static boolean HALT = false;
 
+
+
     public static void main(String[] args) {
         theGui.CreateandShowGUI();
 
+    }
+
+    public static void setHALT(boolean HALT) {
+        Main.HALT = HALT;
     }
 
     /***
@@ -40,21 +46,26 @@ public class Main {
      * @author Charles
      */
     public static void singleStep(){
-        //instruction fetch
-        mar.getFromPC(pc);
-        mbr.getFromMem(mar,mem);
-        ir.getFromMBR(mbr);
-        //instruction decode & operand fetch
-        decoder.decoding(HALT,alu,mem,ir,mar,mbr,x1,x2,x3);
-
-        //when decoder get the HALT instruction, it won't continue to run
         if(!HALT) {
-            //Execute
-            decoder.executing(alu, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
-            //Result store
-            decoder.depositing(alu, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
-            //Next instruction
-            pc.nextProgram();
+            //instruction fetch
+            mar.getFromPC(pc);
+            mbr.getFromMem(mar, mem);
+            ir.getFromMBR(mbr);
+            //instruction decode & operand fetch
+            decoder.decoding(HALT, alu, mem, ir, mar, mbr, x1, x2, x3);
+            //when decoder get the HALT instruction, it won't continue to run
+            if (decoder.getOpcode()==0) {
+                Main.setHALT(true);
+            }
+            if(!HALT) {
+                //Execute
+                decoder.executing(alu, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
+                //Result store
+                decoder.depositing(alu, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
+                //Next instruction
+                pc.nextProgram();
+            }
+
         }
 
     }
@@ -68,7 +79,7 @@ public class Main {
      * @author Charles
      */
     public static void loadAndStore(int inst){
-        HALT=false;
+        setHALT(false);
         ir.setValue(inst);
         decoder.decoding(HALT,alu,mem,ir,mar,mbr,x1,x2,x3);
         decoder.executing(alu,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);

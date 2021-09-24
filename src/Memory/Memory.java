@@ -38,4 +38,7 @@ public class Memory {
         this.memory[address]=value;
     }
 
+    public void resetMemory(){
+        this.memory = new int[2048];
+    }
 }

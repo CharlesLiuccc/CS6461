@@ -3,6 +3,7 @@ package CPU;
 import CPU.Register.*;
 import Memory.Memory;
 
+
 /***
  * This is the class for Decoder.
  * Decoder will do Locate And Fetch Operand Data step,
@@ -29,6 +30,10 @@ public class Decoder {
         this.address=-1;
     }
 
+    public int getOpcode() {
+        return opcode;
+    }
+
     //This function is used in Locate And Fetch Operand Data step
     public void decoding(boolean HALT,ALU alu, Memory mem, InstructionRegister ir, MemoryAddressRegister mar, MemoryBufferRegister mbr, IndexRegister X1, IndexRegister X2, IndexRegister X3){
         String instruction = Integer.toBinaryString(ir.getValue());
@@ -44,7 +49,7 @@ public class Decoder {
         this.address = Integer.parseInt(instruction.substring(11,16),2);
 
         if(opcode == 0){
-            HALT = true;
+            System.out.println("decoder:"+HALT);
         }
         else {
             alu.setIAR(this.address);

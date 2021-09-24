@@ -21,7 +21,7 @@ public class Test {
     public static Decoder decoder = new Decoder();
     public static ALU alu = new ALU();
 
-    public static void main(String[] args) {
+   // public static void main(String[] args) {
 //        //STX Test success
 //        mem.setToMemory(6,43948); //101010 11 10 1 01100
 //
@@ -114,5 +114,5 @@ public class Test {
 //        decoder.depositing(alu,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
 //        System.out.println(gpr3.getValue());
 
-    }
+  //  }
 }

@@ -128,6 +128,8 @@ public class CiscGUI {
             public void actionPerformed(ActionEvent e) {
                 consoleTextArea.setText("");
 
+                Main.mem.resetMemory();
+                Main.setHALT(false);
                 Main.gpr0.setValue(0); //Resetting all registers
                 Main.gpr1.setValue(0);
                 Main.gpr2.setValue(0);
@@ -401,6 +403,7 @@ public class CiscGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Main.singleStep();
+                UpdateGUI();
 
             }
         });
@@ -427,6 +430,15 @@ public class CiscGUI {
                 }
             }
         });
+        runButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                while(!Main.HALT){
+                    Main.singleStep();
+                }
+                UpdateGUI();
+            }
+        });
     }
 
     public void CreateandShowGUI() {
@@ -451,6 +463,9 @@ public class CiscGUI {
         mbrTextField.setText(Integer.toBinaryString(Main.mbr.getValue()| 0x10000).substring(1));
         irTextField.setText(Integer.toBinaryString(Main.ir.getValue()| 0x10000).substring(1));
         mfrTextField.setText(Integer.toBinaryString(Main.mfr.getValue()| 0x10).substring(1));
+        if(Main.HALT){
+            consoleTextArea.setText("The program is finished!");
+        }
     }
 
     private void PrintOperation(){
