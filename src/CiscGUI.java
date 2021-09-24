@@ -127,6 +127,18 @@ public class CiscGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 consoleTextArea.setText("");
+
+                Main.gpr0.setValue(0); //Resetting all registers
+                Main.gpr1.setValue(0);
+                Main.gpr2.setValue(0);
+                Main.gpr3.setValue(0);
+                Main.x1.setValue(0);
+                Main.x2.setValue(0);
+                Main.x3.setValue(0);
+                Main.mar.setValue(0);
+                Main.mbr.setValue(0);
+                Main.ir.setValue(0);
+                Main.mfr.setValue(0);
                 File file = new File("src/ipl.txt");
                 Scanner sc = null;
                 try {
