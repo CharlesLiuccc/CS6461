@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Locale;
 import java.io.File;
@@ -141,17 +142,20 @@ public class CiscGUI {
                 Main.mbr.setValue(0);
                 Main.ir.setValue(0);
                 Main.mfr.setValue(0);
-                File file = new File("src/ipl.txt");
-                Scanner sc = null;
-                try {
-                    sc = new Scanner(file);
-                } catch (FileNotFoundException ex) {
-                    ex.printStackTrace();
-                }
+
+                InputStream is = getClass().getResourceAsStream("ipl.txt");
+                Scanner read = new Scanner(is);
+                //File file = new File("src/ipl.txt");
+                //Scanner sc = null;
+//                try {
+//                    sc = new Scanner(file);
+//                } catch (FileNotFoundException ex) {
+//                    ex.printStackTrace();
+//                }
 
                 Main.pc.setValue(6); //Assume first instruction is at 6 every time
-                while(sc.hasNextLine()) {
-                    String str = sc.nextLine().trim();
+                while(read.hasNextLine()) {
+                    String str = read.nextLine().trim();
                     int address = Integer.parseInt(str.substring(0,4),16);
                     int data = Integer.parseInt(str.substring(5,9),16);
 
