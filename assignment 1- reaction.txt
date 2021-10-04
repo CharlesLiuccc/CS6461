@@ -1,0 +1,28 @@
+The first problem is to load ipl.txt
+Brian
+
+
+The second problem is about instructions in test program:
+our project will start to execute the program in ipl at the address of 6 in memory
+so the test program will be changed to
+0006 844B
+0007 0D40
+0008 0E41
+0009 0F42
+000A 0000
+000B 0064
+
+And we try to decode the first instruction in test program:
+hex:8445 equals
+binary:100001 00 01 0 00101
+whose opcode is 100001(binary) equals 33(digital)
+We don't realize the Instruction with opcode 33(digital)
+But we guess this instruction means load the content in memory[00101] to Index Register 1
+Our opcode for LDX is 41(digital) equals 101001
+so the test program will be changed to 
+0006 A44B
+0007 0D40
+0008 0E41
+0009 0F42
+000A 0000
+000B 0064

@@ -48,6 +48,7 @@ public class Decoder {
         this.I = Integer.parseInt(instruction.substring(10,11),2);
         this.address = Integer.parseInt(instruction.substring(11,16),2);
 
+        //System.out.println(this.opcode+"/"+this.R+"/"+this.IX+"/"+this.address);
         if(opcode == 0){
             //System.out.println("decoder:"+HALT);
         }
@@ -62,7 +63,10 @@ public class Decoder {
                 //LDR
                 case 1 -> mbr.getFromMem(mar, mem);
                 //LDX
-                case 41 -> mbr.getFromMem(mar, mem);
+                case 41 -> {
+                    mar.setValue(this.address);
+                    mbr.getFromMem(mar, mem);
+                }
                 // STR, LDA, STX won't react with memory at this step
                 // using switch statement in case to add more opcode
             }
@@ -119,20 +123,25 @@ public class Decoder {
                     case 3 -> R3.setValue(alu.getIRRValue());
                 }
             }
-            //STR & STX
-            case 2, 42 ->{
+            //STR
+            case 2 ->{
                 mbr.setValue(alu.getIRRValue());
                 mbr.storeToMem(mar,mem);
             }
             //LDX
             case 41 ->{
                 switch (IX){
-                    case 0 -> X1.setValue(alu.getIRRValue());
-                    case 1 -> X2.setValue(alu.getIRRValue());
-                    case 2 -> X3.setValue(alu.getIRRValue());
+                    case 1 -> X1.setValue(alu.getIRRValue());
+                    case 2 -> X2.setValue(alu.getIRRValue());
+                    case 3 -> X3.setValue(alu.getIRRValue());
                 }
             }
             //STX
+            case 42 ->{
+                mar.setValue(this.address);
+                mbr.setValue(alu.getIRRValue());
+                mbr.storeToMem(mar,mem);
+            }
         }
     }
 

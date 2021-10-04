@@ -18,6 +18,7 @@ public class MemoryBufferRegister extends Register{
 
     public void getFromMem(MemoryAddressRegister mar, Memory mem){
        this.setValue(mem.getFromMemory(mar.getValue()));
+       //System.out.println(this.getValue());
     }
 
     public void storeToMem(MemoryAddressRegister mar, Memory mem){
