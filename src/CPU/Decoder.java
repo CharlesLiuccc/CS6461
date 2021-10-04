@@ -48,7 +48,7 @@ public class Decoder {
         this.I = Integer.parseInt(instruction.substring(10,11),2);
         this.address = Integer.parseInt(instruction.substring(11,16),2);
 
-        //System.out.println(this.opcode+"/"+this.R+"/"+this.IX+"/"+this.address);
+//        System.out.println(this.opcode+"/"+this.R+"/"+this.IX+"/"+this.I+"/"+this.address);
         if(opcode == 0){
             //System.out.println("decoder:"+HALT);
         }
@@ -63,7 +63,7 @@ public class Decoder {
                 //LDR
                 case 1 -> mbr.getFromMem(mar, mem);
                 //LDX
-                case 41 -> {
+                case 33 -> {
                     mar.setValue(this.address);
                     mbr.getFromMem(mar, mem);
                 }
@@ -80,7 +80,7 @@ public class Decoder {
                 //error
             }
             //LDR & LDX
-            case 1, 41 -> {
+            case 1, 33 -> {
                 alu.setIRR(mbr.getValue());
             }
             //STR
@@ -97,7 +97,7 @@ public class Decoder {
                 alu.setIRR(mar.getValue());
             }
             //STX
-            case 42 -> {
+            case 34 -> {
                 switch (IX) {
                     case 1 -> alu.setIRR(X1.getValue());
                     case 2 -> alu.setIRR(X2.getValue());
@@ -129,7 +129,7 @@ public class Decoder {
                 mbr.storeToMem(mar,mem);
             }
             //LDX
-            case 41 ->{
+            case 33 ->{
                 switch (IX){
                     case 1 -> X1.setValue(alu.getIRRValue());
                     case 2 -> X2.setValue(alu.getIRRValue());
@@ -137,7 +137,7 @@ public class Decoder {
                 }
             }
             //STX
-            case 42 ->{
+            case 34 ->{
                 mar.setValue(this.address);
                 mbr.setValue(alu.getIRRValue());
                 mbr.storeToMem(mar,mem);

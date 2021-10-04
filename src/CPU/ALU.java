@@ -74,6 +74,7 @@ public class ALU {
             this.setIAR(2^12);
         }
         this.IAR.setValue(EA);
+//        System.out.println(EA);
     }
 
 }

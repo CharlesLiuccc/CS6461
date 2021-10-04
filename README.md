@@ -7,28 +7,28 @@ the computer_simulator project for CS6461
 
 **program:**
 
-LDR 0, 0, 20
+LDR 0,0,14
 
-STR 0, 0, 24
+STR 0,0,15
 
-LDX 1, 24
+LDX 0,1,15
 
-LDX 2, 1, 20	(I want to use X1 to calculate the EA)
+STX 0,1,16
 
-STX 2, 1, 24	(I want to use X1 to calculate the EA)
+LDA 1,1,20
 
-LDA 1, 1, 24
+LDR 2,1,0,1
 
-LDR 2, 2, 26, 1
+STR 2,1,20,1
 
-STR 1, 2, 20, 1
+Attention: the program counter will start at 6, so the first instruction of program must be written to memory at address 6.
 
 **Data:**
 
-Mem[20] = 50
+MEM[14] = 20
 
-Mem[40] = 10086
+MEM[20] = 40
 
-Mem[50] = 40
+MEM[40] = 80
 
-Mem[70] = 24
+Attention: all the numbers here are digital
