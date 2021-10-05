@@ -143,25 +143,26 @@ public class CiscGUI {
                 Main.ir.setValue(0);
                 Main.mfr.setValue(0);
 
-                InputStream is = getClass().getResourceAsStream("ipl.txt");
-                Scanner read = new Scanner(is);
-                //File file = new File("src/ipl.txt");
-                //Scanner sc = null;
-//                try {
-//                    sc = new Scanner(file);
-//                } catch (FileNotFoundException ex) {
-//                    ex.printStackTrace();
-//                }
+                JFileChooser file_chooser = new JFileChooser();
 
-                Main.pc.setValue(6); //Assume first instruction is at 6 every time
-                while(read.hasNextLine()) {
-                    String str = read.nextLine().trim();
-                    int address = Integer.parseInt(str.substring(0,4),16);
-                    int data = Integer.parseInt(str.substring(5,9),16);
+                if (file_chooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
+                    File file = file_chooser.getSelectedFile();
+                    try {
+                        Scanner read = new Scanner(file);
+                        Main.pc.setValue(6); //Assume first instruction is at 6 every time
+                        while(read.hasNextLine()) {
+                            String str = read.nextLine().trim();
+                            int address = Integer.parseInt(str.substring(0,4),16);
+                            int data = Integer.parseInt(str.substring(5,9),16);
 
-                    //TODO use Memory.SetMEM(address,data)
-                    Main.mem.setToMemory(address,data);
-                    UpdateGUI();
+                            //TODO use Memory.SetMEM(address,data)
+                            Main.mem.setToMemory(address,data);
+                            UpdateGUI();
+                        }
+
+                    } catch (FileNotFoundException ex) {
+                        consoleTextArea.setText("Invalid File: Please Click IPL again to choose a new file");
+                    }
                 }
 
             }
