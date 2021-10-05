@@ -158,6 +158,7 @@ public class CiscGUI {
                             //TODO use Memory.SetMEM(address,data)
                             Main.mem.setToMemory(address,data);
                             UpdateGUI();
+                            consoleTextArea.setText("File loaded, please click ss or run button to run the program");
                         }
 
                     } catch (FileNotFoundException ex) {
