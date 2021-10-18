@@ -1,0 +1,16 @@
+update the GUI (fix the memory console to support I/O system)
+
+implement Trasfer Instructions (opcode from 8(digital) to 15(digital))
+
+implement Arithmetic and Logical Instructions (opcode from 4 to 7, 16 to 21, 25 and 26)
+
+implement I/O Operation Instructions except for CHK (opcode 49 and 50)
+
+implement Simple Cache and update the functions used in CPU
+
+translate the program 1 into instructions
+
+
+//I just try to translate the program 1, and find that we need to implement an extra Instraction(CMP) for comparition.
+
+
