@@ -1,14 +1,12 @@
 update the GUI (fix the memory console to support I/O system)
+implement I/O Operation Instructions except for CHK (opcode 49 and 50)
 
 implement Trasfer Instructions (opcode from 8(digital) to 15(digital))
-
 implement Arithmetic and Logical Instructions (opcode from 4 to 7, 16 to 21, 25 and 26)
-
-implement I/O Operation Instructions except for CHK (opcode 49 and 50)
+finish condition code register & machine fault register
 
 implement Simple Cache and update the functions used in CPU
 
-finish condition code register & machine fault register
 
 translate the program 1 into instructions
 
