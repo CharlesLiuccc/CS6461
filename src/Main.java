@@ -52,17 +52,20 @@ public class Main {
             mbr.getFromMem(mar, mem);
             ir.getFromMBR(mbr);
             //instruction decode & operand fetch
-            decoder.decoding(HALT, alu, mem, ir, mar, mbr, x1, x2, x3);
+            decoder.decoding(ir);
             //when decoder get the HALT instruction, it won't continue to run
             if (decoder.getOpcode()==0) {
                 Main.setHALT(true);
             }
             if(!HALT) {
+                //Locate and fetch the operand data
+                decoder.fetching(alu, mem, mar, mbr, x1, x2, x3);
                 //Execute
-                decoder.executing(pc,alu, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
+                decoder.executing(alu, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
                 //Result store
-                decoder.depositing(pc,alu, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
+                decoder.depositing(alu, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
                 //Next instruction
+                decoder.nextInstruction(pc);
                 //pc.nextProgram();
             }
 
@@ -81,9 +84,10 @@ public class Main {
     public static void loadAndStore(int inst){
         setHALT(false);
         ir.setValue(inst);
-        decoder.decoding(HALT,alu,mem,ir,mar,mbr,x1,x2,x3);
-        decoder.executing(pc,alu,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
-        decoder.depositing(pc,alu,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
+        decoder.decoding(ir);
+        decoder.fetching(alu,mem,mar,mbr,x1,x2,x3);
+        decoder.executing(alu,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
+        decoder.depositing(alu,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
+        //decoder.nextInstruction(pc);
     }
-
 }
