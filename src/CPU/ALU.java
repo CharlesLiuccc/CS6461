@@ -51,8 +51,9 @@ public class ALU {
     }
 
     //this function is used to compute the Effective address and store it to IAR
-    public void computeEA(int IX, int I,Memory mem, IndexRegister X1,IndexRegister X2,IndexRegister X3){
+    public void computeEA(int IX, int I,int address,Memory mem, IndexRegister X1,IndexRegister X2,IndexRegister X3){
         int EA = 0;
+        this.setIAR(address);
         if(I==0){
             switch (IX) {
                 case 0 -> EA = this.IAR.getValue();

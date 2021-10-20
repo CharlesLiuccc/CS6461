@@ -59,11 +59,11 @@ public class Main {
             }
             if(!HALT) {
                 //Execute
-                decoder.executing(alu, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
+                decoder.executing(pc,alu, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
                 //Result store
-                decoder.depositing(alu, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
+                decoder.depositing(pc,alu, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
                 //Next instruction
-                pc.nextProgram();
+                //pc.nextProgram();
             }
 
         }
@@ -82,8 +82,8 @@ public class Main {
         setHALT(false);
         ir.setValue(inst);
         decoder.decoding(HALT,alu,mem,ir,mar,mbr,x1,x2,x3);
-        decoder.executing(alu,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
-        decoder.depositing(alu,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
+        decoder.executing(pc,alu,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
+        decoder.depositing(pc,alu,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
     }
 
 }

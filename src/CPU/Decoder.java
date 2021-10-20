@@ -43,38 +43,59 @@ public class Decoder {
         }
 
         this.opcode=Integer.parseInt(instruction.substring(0,6),2);
-        this.R = Integer.parseInt(instruction.substring(6,8),2);
-        this.IX = Integer.parseInt(instruction.substring(8,10),2);
-        this.I = Integer.parseInt(instruction.substring(10,11),2);
-        this.address = Integer.parseInt(instruction.substring(11,16),2);
+
 
 //        System.out.println(this.opcode+"/"+this.R+"/"+this.IX+"/"+this.I+"/"+this.address);
         if(opcode == 0){
             //System.out.println("decoder:"+HALT);
         }
         else {
-            alu.setIAR(this.address);
-//        System.out.println(alu.getIARValue());
-            alu.computeEA(this.IX, this.I, mem, X1, X2, X3);
-//        System.out.println(alu.getIARValue());
-            mar.setValue(alu.getIARValue());
+
+//            this.R = Integer.parseInt(instruction.substring(6,8),2);
+//            this.IX = Integer.parseInt(instruction.substring(8,10),2);
+//            this.I = Integer.parseInt(instruction.substring(10,11),2);
+//            this.address = Integer.parseInt(instruction.substring(11,16),2);
+//            alu.computeEA(this.IX, this.I, this.address,mem, X1, X2, X3);
+//            mar.setValue(alu.getIARValue());
 
             switch (opcode) {
                 //LDR
-                case 1 -> mbr.getFromMem(mar, mem);
+                case 1 -> {
+                    this.R = Integer.parseInt(instruction.substring(6,8),2);
+                    this.IX = Integer.parseInt(instruction.substring(8,10),2);
+                    this.I = Integer.parseInt(instruction.substring(10,11),2);
+                    this.address = Integer.parseInt(instruction.substring(11,16),2);
+                    alu.computeEA(this.IX, this.I, this.address,mem, X1, X2, X3);
+                    mar.setValue(alu.getIARValue());
+                    mbr.getFromMem(mar, mem);
+                }
                 //LDX
                 case 33 -> {
+                    this.R = Integer.parseInt(instruction.substring(6,8),2);
+                    this.IX = Integer.parseInt(instruction.substring(8,10),2);
+                    this.I = Integer.parseInt(instruction.substring(10,11),2);
+                    this.address = Integer.parseInt(instruction.substring(11,16),2);
+                    alu.computeEA(this.IX, this.I, this.address,mem, X1, X2, X3);
+                    mar.setValue(alu.getIARValue());
                     mar.setValue(this.address);
                     mbr.getFromMem(mar, mem);
                 }
                 // STR, LDA, STX won't react with memory at this step
+                case 2,3,34 ->{
+                    this.R = Integer.parseInt(instruction.substring(6,8),2);
+                    this.IX = Integer.parseInt(instruction.substring(8,10),2);
+                    this.I = Integer.parseInt(instruction.substring(10,11),2);
+                    this.address = Integer.parseInt(instruction.substring(11,16),2);
+                    alu.computeEA(this.IX, this.I, this.address,mem, X1, X2, X3);
+                    mar.setValue(alu.getIARValue());
+                }
                 // using switch statement in case to add more opcode
             }
         }
     }
 
     //This function is used in Execute the Operation step
-    public void executing(ALU alu,MemoryAddressRegister mar, MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3){
+    public void executing(ProgramCounter pc,ALU alu,MemoryAddressRegister mar, MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3){
         switch (this.opcode) {
             case -1 -> {
                 //error
@@ -109,7 +130,7 @@ public class Decoder {
     }
 
     //This function is used in Deposit Results step
-    public void depositing(ALU alu,Memory mem,MemoryAddressRegister mar,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3){
+    public void depositing(ProgramCounter pc,ALU alu,Memory mem,MemoryAddressRegister mar,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3){
         switch (this.opcode){
             case -1 ->{
                 //error
@@ -122,11 +143,13 @@ public class Decoder {
                     case 2 -> R2.setValue(alu.getIRRValue());
                     case 3 -> R3.setValue(alu.getIRRValue());
                 }
+                pc.nextProgram();
             }
             //STR
             case 2 ->{
                 mbr.setValue(alu.getIRRValue());
                 mbr.storeToMem(mar,mem);
+                pc.nextProgram();
             }
             //LDX
             case 33 ->{
@@ -135,12 +158,14 @@ public class Decoder {
                     case 2 -> X2.setValue(alu.getIRRValue());
                     case 3 -> X3.setValue(alu.getIRRValue());
                 }
+                pc.nextProgram();
             }
             //STX
             case 34 ->{
                 mar.setValue(this.address);
                 mbr.setValue(alu.getIRRValue());
                 mbr.storeToMem(mar,mem);
+                pc.nextProgram();
             }
         }
     }

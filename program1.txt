@@ -6,6 +6,7 @@ LOOP
 	STR R1 to address
 	AIR R0
 20 times
+// PRT 20 numbers
 
 IN number to R0
 STR R0

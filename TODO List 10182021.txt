@@ -7,8 +7,8 @@ finish condition code register & machine fault register
 
 implement Simple Cache and update the functions used in CPU
 
-
 translate the program 1 into instructions
+
 
 
 //I just try to translate the program 1, and find that we need to implement an extra Instraction(CMP) for comparition.
