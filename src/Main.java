@@ -61,11 +61,11 @@ public class Main {
                 //Locate and fetch the operand data
                 decoder.fetching(alu, mem, mar, mbr, x1, x2, x3);
                 //Execute
-                decoder.executing(alu, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
+                decoder.executing(alu, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
                 //Result store
                 decoder.depositing(alu, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
                 //Next instruction
-                decoder.nextInstruction(pc);
+                decoder.nextInstruction(pc,alu,gpr0,gpr1,gpr2,gpr3);
                 //pc.nextProgram();
             }
 
@@ -86,7 +86,7 @@ public class Main {
         ir.setValue(inst);
         decoder.decoding(ir);
         decoder.fetching(alu,mem,mar,mbr,x1,x2,x3);
-        decoder.executing(alu,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
+        decoder.executing(alu,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
         decoder.depositing(alu,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
         //decoder.nextInstruction(pc);
     }

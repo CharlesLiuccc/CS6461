@@ -59,8 +59,8 @@ public class Decoder {
 
         switch (opcode){
             case 0 -> System.out.println("HALT Instruction");
-            //decoding for Load/Store Instructions
-            case 1,2,3,33,34 ->{
+            //decoding for Load/Store Instructions, Transfer Instructions
+            case 1,2,3,33,34,8,9 ->{
                 this.R = Integer.parseInt(instruction.substring(6,8),2);
                 this.IX = Integer.parseInt(instruction.substring(8,10),2);
                 this.I = Integer.parseInt(instruction.substring(10,11),2);
@@ -88,12 +88,16 @@ public class Decoder {
                 alu.computeEA(this.IX,this.I,this.address,mem,X1,X2,X3);
                 mbr.setValue(alu.getIARValue());
             }
+            //JZ, JNE
+            case 8,9 ->{
+                alu.computeEA(this.IX,this.I,this.address,mem,X1,X2,X3);
+            }
             // using switch statement in case to add more opcode
         }
     }
 
     //This function is used in Execute the Operation step
-    public void executing(ALU alu,MemoryAddressRegister mar, MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3){
+    public void executing(ALU alu, MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3){
         switch (this.opcode) {
             case -1 -> {
                 //error
@@ -119,6 +123,8 @@ public class Decoder {
                     case 3 -> alu.setIRR(X3.getValue());
                 }
             }
+            //JZ, JNE
+            case 8,9 -> {}
         }
 
     }
@@ -151,15 +157,47 @@ public class Decoder {
                     case 3 -> X3.setValue(alu.getIRRValue());
                 }
             }
+            //JZ, JNE
+            case 8,9 ->{}
         }
     }
 
     //This is used in Determining Next Instruction step
-    public void nextInstruction(ProgramCounter pc){
+    public void nextInstruction(ProgramCounter pc,ALU alu,GeneralPurposeRegister R0, GeneralPurposeRegister R1, GeneralPurposeRegister R2,GeneralPurposeRegister R3){
         switch (this.opcode){
             case 1,2,3,33,34 ->{
                 pc.nextProgram();
             }
+            //JZ
+            case 8 ->{
+                int content = -1;
+                switch (this.R){
+                    case 0 -> content = R0.getValue();
+                    case 1 -> content = R1.getValue();
+                    case 2 -> content = R2.getValue();
+                    case 3 -> content = R3.getValue();
+                }
+                if(content == 0){
+                    pc.setValue(alu.getIARValue());
+                }
+                else pc.nextProgram();
+            }
+            //JNE
+            case 9 ->{
+                int content = -1;
+                switch (this.R){
+                    case 0 -> content = R0.getValue();
+                    case 1 -> content = R1.getValue();
+                    case 2 -> content = R2.getValue();
+                    case 3 -> content = R3.getValue();
+                }
+                if(content != 0 ){
+                    pc.setValue(alu.getIARValue());
+                }
+                else pc.nextProgram();
+
+            }
+
         }
     }
 
