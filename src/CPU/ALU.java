@@ -8,7 +8,7 @@ import Memory.Memory;
 /***
  * This is the class for ALU.
  * ALU has 2 register inside: IAR and IRR.
- * ALU will do the effective address computation
+ * ALU will do the effective address computation and basic calculation
  *
  * @author Charles
  */
@@ -76,6 +76,17 @@ public class ALU {
         }
         this.IAR.setValue(EA);
 //        System.out.println(EA);
+    }
+
+    //this function is used to calculate with 2 operand and store the value to IRR
+    public void calculate(int operandA,int operandB, int operation){
+        switch(operation){
+            case 1 ->{this.IRR.setValue(operandA + operandB);}
+            case 2 ->{this.IRR.setValue(operandA - operandB);}
+            case 3 ->{this.IRR.setValue(operandA * operandB);}
+            case 4 ->{this.IRR.setValue(operandA / operandB);}
+            case 5 ->{this.IRR.setValue(operandA % operandB);}
+        }
     }
 
 }

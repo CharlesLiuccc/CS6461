@@ -59,8 +59,8 @@ public class Decoder {
 
         switch (opcode){
             case 0 -> System.out.println("HALT Instruction");
-            //decoding for Load/Store Instructions, Transfer Instructions
-            case 1,2,3,33,34,8,9,10,11,12,13,14,15 ->{
+            //decoding for Load/Store Instructions, Transfer Instructions, Arithmetic Instructions
+            case 1,2,3,33,34,8,9,10,11,12,13,14,15,4,5,6,7 ->{
                 this.R = Integer.parseInt(instruction.substring(6,8),2);
                 this.IX = Integer.parseInt(instruction.substring(8,10),2);
                 this.I = Integer.parseInt(instruction.substring(10,11),2);
@@ -72,8 +72,8 @@ public class Decoder {
     //This function is used in Locate And Fetch Operand Data step
     public void fetching(ALU alu, Memory mem, MemoryAddressRegister mar, MemoryBufferRegister mbr, IndexRegister X1, IndexRegister X2, IndexRegister X3){
         switch (opcode) {
-            //LDR and LDX
-            case 1, 33 -> {
+            //LDR, LDX, AMR, SMR
+            case 1, 33, 4, 5 -> {
                 alu.computeEA(this.IX, this.I, this.address,mem, X1, X2, X3);
                 mar.setValue(alu.getIARValue());
                 mbr.getFromMem(mar, mem);
@@ -99,7 +99,7 @@ public class Decoder {
     }
 
     //This function is used in Execute the Operation step
-    public void executing(ALU alu,ProgramCounter pc,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3){
+    public void executing(ALU alu,ProgramCounter pc,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3) {
         switch (this.opcode) {
             case -1 -> {
                 //error
@@ -126,22 +126,59 @@ public class Decoder {
                 }
             }
             //JZ, JNE, JCC, JMA, RFS, JGE
-            case 8,9,10,11,13,15 -> {}
+            case 8, 9, 10, 11, 13, 15 -> {
+            }
             //JSR
-            case 12 ->{
+            case 12 -> {
                 pc.nextProgram();
             }
             //SOB
-            case 14 ->{
-                switch (this.R){
-                    case 0 ->{R0.setValue(R0.getValue()-1);}
-                    case 1 ->{R1.setValue(R1.getValue()-1);}
-                    case 2 ->{R2.setValue(R2.getValue()-1);}
-                    case 3 ->{R3.setValue(R3.getValue()-1);}
+            case 14 -> {
+                switch (this.R) {
+                    case 0 -> R0.setValue(R0.getValue() - 1);
+                    case 1 -> R1.setValue(R1.getValue() - 1);
+                    case 2 -> R2.setValue(R2.getValue() - 1);
+                    case 3 -> R3.setValue(R3.getValue() - 1);
                 }
             }
-        }
+            //AMR
+            case 4 -> {
+                switch (this.R) {
+                    case 0 -> alu.calculate(R0.getValue(), mbr.getValue(), 1);
+                    case 1 -> alu.calculate(R1.getValue(), mbr.getValue(), 1);
+                    case 2 -> alu.calculate(R2.getValue(), mbr.getValue(), 1);
+                    case 3 -> alu.calculate(R3.getValue(), mbr.getValue(), 1);
+                }
+            }
+            //SMR
+            case 5 ->{
+                switch (this.R) {
+                    case 0 -> alu.calculate(R0.getValue(), mbr.getValue(), 2);
+                    case 1 -> alu.calculate(R1.getValue(), mbr.getValue(), 2);
+                    case 2 -> alu.calculate(R2.getValue(), mbr.getValue(), 2);
+                    case 3 -> alu.calculate(R3.getValue(), mbr.getValue(), 2);
+                }
+            }
+            //AIR
+            case 6 ->{
+                switch (this.R) {
+                    case 0 -> alu.calculate(R0.getValue(), this.address, 1);
+                    case 1 -> alu.calculate(R1.getValue(), this.address, 1);
+                    case 2 -> alu.calculate(R2.getValue(), this.address, 1);
+                    case 3 -> alu.calculate(R3.getValue(), this.address, 1);
+                }
+            }
+            //SIR
+            case 7 ->{
+                switch (this.R) {
+                    case 0 -> alu.calculate(R0.getValue(), this.address, 2);
+                    case 1 -> alu.calculate(R1.getValue(), this.address, 2);
+                    case 2 -> alu.calculate(R2.getValue(), this.address, 2);
+                    case 3 -> alu.calculate(R3.getValue(), this.address, 2);
+                }
+            }
 
+        }
     }
 
     //This function is used in Deposit Results step
@@ -150,8 +187,8 @@ public class Decoder {
             case -1 ->{
                 //error
             }
-            //LDR & LDA
-            case 1, 3 ->{
+            //LDR, LDA, AMR, SMR, AIR, SIR
+            case 1,3,4,5,6,7 ->{
                 switch (this.R){
                     case 0 -> R0.setValue(alu.getIRRValue());
                     case 1 -> R1.setValue(alu.getIRRValue());
@@ -159,8 +196,8 @@ public class Decoder {
                     case 3 -> R3.setValue(alu.getIRRValue());
                 }
             }
-            //STR & STX
-            case 2, 34 ->{
+            //STR, STX
+            case 2,34 ->{
                 mbr.setValue(alu.getIRRValue());
                 mbr.storeToMem(mar,mem);
             }
@@ -188,7 +225,8 @@ public class Decoder {
     //This is used in Determining Next Instruction step
     public void nextInstruction(ProgramCounter pc,ALU alu,ConditionCode cc,GeneralPurposeRegister R0, GeneralPurposeRegister R1, GeneralPurposeRegister R2,GeneralPurposeRegister R3){
         switch (this.opcode){
-            case 1,2,3,33,34 ->{
+            //LDR, STR, LDA, LDX, STX, AMR, SMR, AIR, SIR
+            case 1,2,3,33,34,4,5,6,7 ->{
                 pc.nextProgram();
             }
             //JZ
