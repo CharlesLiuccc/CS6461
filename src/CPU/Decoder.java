@@ -40,6 +40,11 @@ public class Decoder {
         this.IX=-1;
         this.I=-1;
         this.address=-1;
+        this.Rx=-1;
+        this.Ry=-1;
+        this.A_L=-1;
+        this.L_R=-1;
+        this.count=-1;
     }
 
     public int getOpcode() {
@@ -65,6 +70,11 @@ public class Decoder {
                 this.IX = Integer.parseInt(instruction.substring(8,10),2);
                 this.I = Integer.parseInt(instruction.substring(10,11),2);
                 this.address = Integer.parseInt(instruction.substring(11,16),2);
+            }
+            //decoding for Arithmetic and Logic Instructions
+            case 16,17,18,19,20,21 ->{
+                this.Rx=Integer.parseInt(instruction.substring(6,8),2);
+                this.Ry=Integer.parseInt(instruction.substring(8,10),2);
             }
         }
     }
@@ -92,14 +102,14 @@ public class Decoder {
             case 8,9,10,11,12,14,15 ->{
                 alu.computeEA(this.IX,this.I,this.address,mem,X1,X2,X3);
             }
-            //RFS
-            case 13 ->{}
+            //RFS, MUL, DVD
+            case 13,16,17 ->{}
             // using switch statement in case to add more opcode
         }
     }
 
     //This function is used in Execute the Operation step
-    public void executing(ALU alu,ProgramCounter pc,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3) {
+    public void executing(ALU alu,ProgramCounter pc,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3,ConditionCode cc) {
         switch (this.opcode) {
             case -1 -> {
                 //error
@@ -177,18 +187,87 @@ public class Decoder {
                     case 3 -> alu.calculate(R3.getValue(), this.address, 2);
                 }
             }
+            //MUL
+            case 16 -> {
+                if (this.Rx == 0 && this.Ry == 2) {
+                    alu.calculate(R0.getValue(), R2.getValue(), 3);
+                    //process overflow
+                    if(alu.getIRRValue() > 65535) {
+                        //set cc overflow
+                        cc.setOverflow();
+
+                        String res = Integer.toBinaryString(alu.getIRRValue());
+                        while (res.length() < 32) {
+                            res = "0" + res;
+                        }
+                        R0.setValue(Integer.parseInt(res.substring(0,15),2));
+                        R1.setValue(Integer.parseInt(res.substring(16,31),2));
+                    }
+                    else{R1.setValue(alu.getIRRValue());}
+                }
+                else if (this.Rx == 2 && this.Ry == 0) {
+                    alu.calculate(R2.getValue(), R0.getValue(), 3);
+                    //process overflow
+                    if(alu.getIRRValue() > 65535) {
+                        //set cc overflow
+                        cc.setOverflow();
+                        String res = Integer.toBinaryString(alu.getIRRValue());
+                        while (res.length() < 32) {
+                            res = "0" + res;
+                        }
+                        R2.setValue(Integer.parseInt(res.substring(0,15),2));
+                        R3.setValue(Integer.parseInt(res.substring(16,31),2));
+                    }
+                    else{R1.setValue(alu.getIRRValue());}
+                }
+                else
+                    System.out.println("invalid register for multiplication!");
+            }
+            //DVD
+            case 17 ->{
+                if(this.Rx == 0 && this.Ry==2){
+                    //process divide zero
+                    if(R2.getValue() == 0){
+                        cc.setDivZero();
+                    }
+                    else {
+                        alu.calculate(R0.getValue(), R2.getValue(), 4);
+                        R0.setValue(alu.getIRRValue());
+                        alu.calculate(R0.getValue(), R2.getValue(), 5);
+                        R1.setValue(alu.getIRRValue());
+                    }
+                }
+                else if(this.Rx==2&&this.Ry==0){
+                    //process divide zero
+                    if(R0.getValue() == 0){
+                        cc.setDivZero();
+                    }
+                    else {
+                        alu.calculate(R2.getValue(), R0.getValue(), 4);
+                        R2.setValue(alu.getIRRValue());
+                        alu.calculate(R2.getValue(), R0.getValue(), 5);
+                        R3.setValue(alu.getIRRValue());
+                    }
+                }
+                else
+                    System.out.println("invalid register for multiplication!");
+            }
 
         }
     }
 
     //This function is used in Deposit Results step
-    public void depositing(ALU alu,ProgramCounter pc,Memory mem,MemoryAddressRegister mar,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3){
+    public void depositing(ALU alu,ProgramCounter pc,Memory mem,MemoryAddressRegister mar,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3, ConditionCode cc){
         switch (this.opcode){
             case -1 ->{
                 //error
             }
             //LDR, LDA, AMR, SMR, AIR, SIR
             case 1,3,4,5,6,7 ->{
+                //process underflow
+                if(alu.getIRRValue()<0){
+                    cc.setUnderflow();
+                }
                 switch (this.R){
                     case 0 -> R0.setValue(alu.getIRRValue());
                     case 1 -> R1.setValue(alu.getIRRValue());
@@ -209,8 +288,8 @@ public class Decoder {
                     case 3 -> X3.setValue(alu.getIRRValue());
                 }
             }
-            //JZ, JNE, JCC, JMA, SOB, JGE
-            case 8,9,10,11,14,15 ->{}
+            //JZ, JNE, JCC, JMA, SOB, JGE, MUL, DVD
+            case 8,9,10,11,14,15,16,17 ->{}
             //JSR
             case 12 ->{
                 R3.setValue(pc.getValue());
@@ -225,8 +304,8 @@ public class Decoder {
     //This is used in Determining Next Instruction step
     public void nextInstruction(ProgramCounter pc,ALU alu,ConditionCode cc,GeneralPurposeRegister R0, GeneralPurposeRegister R1, GeneralPurposeRegister R2,GeneralPurposeRegister R3){
         switch (this.opcode){
-            //LDR, STR, LDA, LDX, STX, AMR, SMR, AIR, SIR
-            case 1,2,3,33,34,4,5,6,7 ->{
+            //LDR, STR, LDA, LDX, STX, AMR, SMR, AIR, SIR, MUL, DVD
+            case 1,2,3,33,34,4,5,6,7,16,17 ->{
                 pc.nextProgram();
             }
             //JZ
