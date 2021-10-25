@@ -8,7 +8,7 @@ import Memory.Memory;
 /***
  * This is the class for ALU.
  * ALU has 2 register inside: IAR and IRR.
- * ALU will do the effective address computation and basic calculation
+ * ALU will do the effective address computation, arithmetic calculation and logic calculation
  *
  * @author Charles
  */
@@ -79,13 +79,43 @@ public class ALU {
     }
 
     //this function is used to calculate with 2 operand and store the value to IRR
-    public void calculate(int operandA,int operandB, int operation){
+    //operation: 1 for add, 2 for subtract
+    //3 for multiply, 4 for divide, 5 for remainder
+    public void arithmeticCalculate(int operandA,int operandB, int operation){
         switch(operation){
             case 1 ->{this.IRR.setValue(operandA + operandB);}
             case 2 ->{this.IRR.setValue(operandA - operandB);}
             case 3 ->{this.IRR.setValue(operandA * operandB);}
             case 4 ->{this.IRR.setValue(operandA / operandB);}
             case 5 ->{this.IRR.setValue(operandA % operandB);}
+        }
+    }
+    //this function is used to do the logic calculation and store the value to IRR
+    //operation: 1 for AND, 2 for ORR, 3 for NOT
+    public void logicCalculate(int operandA,int operandB,int operation){
+        switch (operation){
+            case 1 ->{
+                this.IRR.setValue(operandA&operandB);
+            }
+            case 2 ->{
+                this.IRR.setValue(operandA|operandB);
+            }
+            case 3 ->{
+                String a = Integer.toBinaryString(operandA);
+                String res = "";
+                for(int i =0;i<a.length();i++){
+                    if(a.charAt(i) == '0'){
+                        res = res + "1";
+                    }
+                    else {
+                        res = res + "0";
+                    }
+                }
+                while(res.length()<16){
+                    res = "1"+res;
+                }
+                this.IRR.setValue(Integer.parseInt(res,2));
+            }
         }
     }
 

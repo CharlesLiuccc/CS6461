@@ -7,9 +7,11 @@ import Memory.Memory;
 
 /***
  * This is the class for Decoder.
- * Decoder will do Locate And Fetch Operand Data step,
+ * Decoder will do Decode Instruction step
+ * Locate And Fetch Operand Data step,
  * Execute the Operation step
- * and Deposit Results step with separate functions
+ * Deposit Results step
+ * and Find Next Instruction step using separate functions
  *
  * @author Charles
  */
@@ -102,8 +104,8 @@ public class Decoder {
             case 8,9,10,11,12,14,15 ->{
                 alu.computeEA(this.IX,this.I,this.address,mem,X1,X2,X3);
             }
-            //RFS, MUL, DVD
-            case 13,16,17 ->{}
+            //RFS, MUL, DVD, TRR, AND, ORR, NOT
+            case 13,16,17,18,19,20,21 ->{}
             // using switch statement in case to add more opcode
         }
     }
@@ -154,43 +156,43 @@ public class Decoder {
             //AMR
             case 4 -> {
                 switch (this.R) {
-                    case 0 -> alu.calculate(R0.getValue(), mbr.getValue(), 1);
-                    case 1 -> alu.calculate(R1.getValue(), mbr.getValue(), 1);
-                    case 2 -> alu.calculate(R2.getValue(), mbr.getValue(), 1);
-                    case 3 -> alu.calculate(R3.getValue(), mbr.getValue(), 1);
+                    case 0 -> alu.arithmeticCalculate(R0.getValue(), mbr.getValue(), 1);
+                    case 1 -> alu.arithmeticCalculate(R1.getValue(), mbr.getValue(), 1);
+                    case 2 -> alu.arithmeticCalculate(R2.getValue(), mbr.getValue(), 1);
+                    case 3 -> alu.arithmeticCalculate(R3.getValue(), mbr.getValue(), 1);
                 }
             }
             //SMR
             case 5 ->{
                 switch (this.R) {
-                    case 0 -> alu.calculate(R0.getValue(), mbr.getValue(), 2);
-                    case 1 -> alu.calculate(R1.getValue(), mbr.getValue(), 2);
-                    case 2 -> alu.calculate(R2.getValue(), mbr.getValue(), 2);
-                    case 3 -> alu.calculate(R3.getValue(), mbr.getValue(), 2);
+                    case 0 -> alu.arithmeticCalculate(R0.getValue(), mbr.getValue(), 2);
+                    case 1 -> alu.arithmeticCalculate(R1.getValue(), mbr.getValue(), 2);
+                    case 2 -> alu.arithmeticCalculate(R2.getValue(), mbr.getValue(), 2);
+                    case 3 -> alu.arithmeticCalculate(R3.getValue(), mbr.getValue(), 2);
                 }
             }
             //AIR
             case 6 ->{
                 switch (this.R) {
-                    case 0 -> alu.calculate(R0.getValue(), this.address, 1);
-                    case 1 -> alu.calculate(R1.getValue(), this.address, 1);
-                    case 2 -> alu.calculate(R2.getValue(), this.address, 1);
-                    case 3 -> alu.calculate(R3.getValue(), this.address, 1);
+                    case 0 -> alu.arithmeticCalculate(R0.getValue(), this.address, 1);
+                    case 1 -> alu.arithmeticCalculate(R1.getValue(), this.address, 1);
+                    case 2 -> alu.arithmeticCalculate(R2.getValue(), this.address, 1);
+                    case 3 -> alu.arithmeticCalculate(R3.getValue(), this.address, 1);
                 }
             }
             //SIR
             case 7 ->{
                 switch (this.R) {
-                    case 0 -> alu.calculate(R0.getValue(), this.address, 2);
-                    case 1 -> alu.calculate(R1.getValue(), this.address, 2);
-                    case 2 -> alu.calculate(R2.getValue(), this.address, 2);
-                    case 3 -> alu.calculate(R3.getValue(), this.address, 2);
+                    case 0 -> alu.arithmeticCalculate(R0.getValue(), this.address, 2);
+                    case 1 -> alu.arithmeticCalculate(R1.getValue(), this.address, 2);
+                    case 2 -> alu.arithmeticCalculate(R2.getValue(), this.address, 2);
+                    case 3 -> alu.arithmeticCalculate(R3.getValue(), this.address, 2);
                 }
             }
             //MUL
             case 16 -> {
                 if (this.Rx == 0 && this.Ry == 2) {
-                    alu.calculate(R0.getValue(), R2.getValue(), 3);
+                    alu.arithmeticCalculate(R0.getValue(), R2.getValue(), 3);
                     //process overflow
                     if(alu.getIRRValue() > 65535) {
                         //set cc overflow
@@ -209,7 +211,7 @@ public class Decoder {
                     }
                 }
                 else if (this.Rx == 2 && this.Ry == 0) {
-                    alu.calculate(R2.getValue(), R0.getValue(), 3);
+                    alu.arithmeticCalculate(R2.getValue(), R0.getValue(), 3);
                     //process overflow
                     if(alu.getIRRValue() > 65535) {
                         //set cc overflow
@@ -238,9 +240,9 @@ public class Decoder {
                     }
                     else {
                         cc.setDivZero(0);
-                        alu.calculate(R0.getValue(), R2.getValue(), 4);
+                        alu.arithmeticCalculate(R0.getValue(), R2.getValue(), 4);
                         R0.setValue(alu.getIRRValue());
-                        alu.calculate(R0.getValue(), R2.getValue(), 5);
+                        alu.arithmeticCalculate(R0.getValue(), R2.getValue(), 5);
                         R1.setValue(alu.getIRRValue());
                     }
                 }
@@ -251,16 +253,27 @@ public class Decoder {
                     }
                     else {
                         cc.setDivZero(0);
-                        alu.calculate(R2.getValue(), R0.getValue(), 4);
+                        alu.arithmeticCalculate(R2.getValue(), R0.getValue(), 4);
                         R2.setValue(alu.getIRRValue());
-                        alu.calculate(R2.getValue(), R0.getValue(), 5);
+                        alu.arithmeticCalculate(R2.getValue(), R0.getValue(), 5);
                         R3.setValue(alu.getIRRValue());
                     }
                 }
                 else
                     System.out.println("invalid register for multiplication!");
             }
-
+            //TRR
+            case 18 -> {
+                if(getGPR(this.Rx,R0,R1,R2,R3).getValue() == getGPR(this.Ry,R0,R1,R2,R3).getValue()){
+                    cc.setEqualOrNot(1);
+                }
+                else
+                    cc.setEqualOrNot(0);
+            }
+            //AND, ORR, NOT
+            case 19,20,21 ->{
+                alu.logicCalculate(getGPR(this.Rx,R0,R1,R2,R3).getValue(),getGPR(this.Ry,R0,R1,R2,R3).getValue(),this.opcode-18);
+            }
         }
     }
 
@@ -272,10 +285,6 @@ public class Decoder {
             }
             //LDR, LDA
             case 1,3 ->{
-                //process underflow
-                if(alu.getIRRValue()<0){
-                    cc.setUnderflow(1);
-                }
                 switch (this.R){
                     case 0 -> R0.setValue(alu.getIRRValue());
                     case 1 -> R1.setValue(alu.getIRRValue());
@@ -322,8 +331,8 @@ public class Decoder {
                     case 3 -> X3.setValue(alu.getIRRValue());
                 }
             }
-            //JZ, JNE, JCC, JMA, SOB, JGE, MUL, DVD
-            case 8,9,10,11,14,15,16,17 ->{}
+            //JZ, JNE, JCC, JMA, SOB, JGE, MUL, DVD, TRR
+            case 8,9,10,11,14,15,16,17,18 ->{}
             //JSR
             case 12 ->{
                 R3.setValue(pc.getValue());
@@ -332,14 +341,18 @@ public class Decoder {
             case 13 ->{
                 R0.setValue(this.address);
             }
+            //AND, ORR, NOT
+            case 19,20,21 ->{
+                getGPR(Rx,R0,R1,R2,R3).setValue(alu.getIRRValue());
+            }
         }
     }
 
     //This is used in Determining Next Instruction step
     public void nextInstruction(ProgramCounter pc,ALU alu,ConditionCode cc,GeneralPurposeRegister R0, GeneralPurposeRegister R1, GeneralPurposeRegister R2,GeneralPurposeRegister R3){
         switch (this.opcode){
-            //LDR, STR, LDA, LDX, STX, AMR, SMR, AIR, SIR, MUL, DVD
-            case 1,2,3,33,34,4,5,6,7,16,17 ->{
+            //LDR, STR, LDA, LDX, STX, AMR, SMR, AIR, SIR, MUL, DVD, TRR, AND, ORR, NOT
+            case 1,2,3,33,34,4,5,6,7,16,17,18,19,20,21 ->{
                 pc.nextProgram();
             }
             //JZ
@@ -417,4 +430,21 @@ public class Decoder {
         }
     }
 
+    private Register getGPR(int num,GeneralPurposeRegister R0,GeneralPurposeRegister R1,GeneralPurposeRegister R2, GeneralPurposeRegister R3){
+        switch (num){
+            case 0 -> {
+                return R0;
+            }
+            case 1 ->{
+                return R1;
+            }
+            case 2 ->{
+                return R2;
+            }
+            case 3 ->{
+                return R3;
+            }
+        }
+        return null;
+    }
 }
