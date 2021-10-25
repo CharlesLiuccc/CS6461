@@ -194,7 +194,7 @@ public class Decoder {
                     //process overflow
                     if(alu.getIRRValue() > 65535) {
                         //set cc overflow
-                        cc.setOverflow();
+                        cc.setOverflow(1);
 
                         String res = Integer.toBinaryString(alu.getIRRValue());
                         while (res.length() < 32) {
@@ -203,14 +203,17 @@ public class Decoder {
                         R0.setValue(Integer.parseInt(res.substring(0,15),2));
                         R1.setValue(Integer.parseInt(res.substring(16,31),2));
                     }
-                    else{R1.setValue(alu.getIRRValue());}
+                    else{
+                        cc.setOverflow(0);
+                        R1.setValue(alu.getIRRValue());
+                    }
                 }
                 else if (this.Rx == 2 && this.Ry == 0) {
                     alu.calculate(R2.getValue(), R0.getValue(), 3);
                     //process overflow
                     if(alu.getIRRValue() > 65535) {
                         //set cc overflow
-                        cc.setOverflow();
+                        cc.setOverflow(1);
                         String res = Integer.toBinaryString(alu.getIRRValue());
                         while (res.length() < 32) {
                             res = "0" + res;
@@ -218,7 +221,10 @@ public class Decoder {
                         R2.setValue(Integer.parseInt(res.substring(0,15),2));
                         R3.setValue(Integer.parseInt(res.substring(16,31),2));
                     }
-                    else{R1.setValue(alu.getIRRValue());}
+                    else{
+                        cc.setOverflow(0);
+                        R1.setValue(alu.getIRRValue());
+                    }
                 }
                 else
                     System.out.println("invalid register for multiplication!");
@@ -228,9 +234,10 @@ public class Decoder {
                 if(this.Rx == 0 && this.Ry==2){
                     //process divide zero
                     if(R2.getValue() == 0){
-                        cc.setDivZero();
+                        cc.setDivZero(1);
                     }
                     else {
+                        cc.setDivZero(0);
                         alu.calculate(R0.getValue(), R2.getValue(), 4);
                         R0.setValue(alu.getIRRValue());
                         alu.calculate(R0.getValue(), R2.getValue(), 5);
@@ -240,9 +247,10 @@ public class Decoder {
                 else if(this.Rx==2&&this.Ry==0){
                     //process divide zero
                     if(R0.getValue() == 0){
-                        cc.setDivZero();
+                        cc.setDivZero(1);
                     }
                     else {
+                        cc.setDivZero(0);
                         alu.calculate(R2.getValue(), R0.getValue(), 4);
                         R2.setValue(alu.getIRRValue());
                         alu.calculate(R2.getValue(), R0.getValue(), 5);
@@ -262,12 +270,38 @@ public class Decoder {
             case -1 ->{
                 //error
             }
-            //LDR, LDA, AMR, SMR, AIR, SIR
-            case 1,3,4,5,6,7 ->{
+            //LDR, LDA
+            case 1,3 ->{
                 //process underflow
                 if(alu.getIRRValue()<0){
-                    cc.setUnderflow();
+                    cc.setUnderflow(1);
                 }
+                switch (this.R){
+                    case 0 -> R0.setValue(alu.getIRRValue());
+                    case 1 -> R1.setValue(alu.getIRRValue());
+                    case 2 -> R2.setValue(alu.getIRRValue());
+                    case 3 -> R3.setValue(alu.getIRRValue());
+                }
+            }
+            //AMR, AIR
+            case 4,6 ->{
+                if(alu.getIRRValue()>65535){
+                    cc.setOverflow(1);
+                }
+                else cc.setOverflow(0);
+                switch (this.R){
+                    case 0 -> R0.setValue(alu.getIRRValue());
+                    case 1 -> R1.setValue(alu.getIRRValue());
+                    case 2 -> R2.setValue(alu.getIRRValue());
+                    case 3 -> R3.setValue(alu.getIRRValue());
+                }
+            }
+            //SMR, SIR
+            case 5,7 ->{
+                if(alu.getIRRValue()<0){
+                    cc.setUnderflow(1);
+                }
+                else cc.setOverflow(0);
                 switch (this.R){
                     case 0 -> R0.setValue(alu.getIRRValue());
                     case 1 -> R1.setValue(alu.getIRRValue());

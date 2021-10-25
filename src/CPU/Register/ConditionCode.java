@@ -21,23 +21,23 @@ public class ConditionCode extends Register{
         this.cc3 = 0;
     }
 
-    public void setOverflow(){
-        this.cc0=1;
+    public void setOverflow(int x){
+        this.cc0=x;
         this.setCCValue();
     }
 
-    public void setUnderflow(){
-        this.cc1=1;
+    public void setUnderflow(int x){
+        this.cc1=x;
         this.setCCValue();
     }
 
-    public void setDivZero(){
-        this.cc2=1;
+    public void setDivZero(int x){
+        this.cc2=x;
         this.setCCValue();
     }
 
-    public void setEqualOrNot(){
-        this.cc3=1;
+    public void setEqualOrNot(int x){
+        this.cc3=x;
         this.setCCValue();
     }
 
