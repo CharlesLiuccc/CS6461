@@ -537,5 +537,14 @@ public class CiscGUI {
 
     }
 
+    //Function prompts user to enter a character and will return the ascii value of the char entered
+    public int In_Instruction(){
+        String inputString = JOptionPane.showInputDialog("Enter in a Character: ");
+        inputString = inputString.replaceAll("\\s+", "");
+        char charEntered = inputString.charAt(inputString.length()-1);
+        int ascii = (int) charEntered;
+        return ascii;
+    }
+
 
 }
