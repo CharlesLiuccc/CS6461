@@ -78,6 +78,13 @@ public class Decoder {
                 this.Rx=Integer.parseInt(instruction.substring(6,8),2);
                 this.Ry=Integer.parseInt(instruction.substring(8,10),2);
             }
+            //decoding for Shift/Rotate Instructions
+            case 25,26 ->{
+                this.R = Integer.parseInt(instruction.substring(6,8),2);
+                this.A_L = Integer.parseInt(instruction.substring(8,9),2);
+                this.L_R = Integer.parseInt(instruction.substring(9,10),2);
+                this.count = Integer.parseInt(instruction.substring(12,16),2);
+            }
         }
     }
 
