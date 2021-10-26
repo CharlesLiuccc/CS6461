@@ -27,6 +27,7 @@ public class Main {
     //initialize Flag
     public static boolean SingleStep = false;
     public static boolean HALT = false;
+    public static int in_value = -1;
 
 
 
@@ -57,11 +58,14 @@ public class Main {
             if (decoder.getOpcode()==0) {
                 Main.setHALT(true);
             }
+            if(decoder.getOpcode() == 49){
+                in_value = theGui.In_Instruction();
+            }
             if(!HALT) {
                 //Locate and fetch the operand data
                 decoder.fetching(alu, mem, mar, mbr, x1, x2, x3);
                 //Execute
-                decoder.executing(alu, pc, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3, cc);
+                decoder.executing(alu, pc, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3, cc, in_value);
                 //Result store
                 decoder.depositing(alu, pc, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3, cc);
                 //Next instruction
@@ -86,7 +90,7 @@ public class Main {
         ir.setValue(inst);
         decoder.decoding(ir);
         decoder.fetching(alu,mem,mar,mbr,x1,x2,x3);
-        decoder.executing(alu,pc,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3,cc);
+        decoder.executing(alu,pc,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3,cc, in_value);
         decoder.depositing(alu,pc,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3,cc);
         //decoder.nextInstruction(pc);
     }
