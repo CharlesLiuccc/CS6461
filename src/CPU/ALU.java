@@ -1,5 +1,6 @@
 package CPU;
 
+import CPU.Register.ConditionCode;
 import CPU.Register.GeneralPurposeRegister;
 import CPU.Register.IndexRegister;
 import CPU.Register.Register;
@@ -102,21 +103,116 @@ public class ALU {
             }
             case 3 ->{
                 String a = Integer.toBinaryString(operandA);
-                String res = "";
+                StringBuilder res = new StringBuilder();
                 for(int i =0;i<a.length();i++){
                     if(a.charAt(i) == '0'){
-                        res = res + "1";
+                        res.append("1");
                     }
                     else {
-                        res = res + "0";
+                        res.append("0");
                     }
                 }
                 while(res.length()<16){
-                    res = "1"+res;
+                    res.insert(0, "1");
                 }
-                this.IRR.setValue(Integer.parseInt(res,2));
+                this.IRR.setValue(Integer.parseInt(res.toString(),2));
             }
         }
     }
+    //this function is used to calculate Shift and store the result in IRR
+    public void shift(int content, int count, int L_R, int A_L, ConditionCode cc){
+        StringBuilder s = new StringBuilder(Integer.toBinaryString(content));
+        while (s.length()<16){
+            s.insert(0, "0");
+        }
 
+        if(L_R==0 && A_L==0){
+            //Right & Arithmetic
+            char sign = s.charAt(0);
+            if(sign == '1'){
+                cc.setUnderflow(1);
+            }
+            else cc.setUnderflow(0);
+            StringBuilder res = new StringBuilder(s.substring(1,16-count));
+            while (res.length()<16){
+                res.insert(0,sign);
+            }
+            this.IRR.setValue(Integer.parseInt(res.toString(),2));
+        }
+        else if(L_R==1 && A_L==0){
+            //Left & Arithmetic
+            char sign = s.charAt(0);
+            if(sign == '1'){
+                cc.setUnderflow(1);
+            }
+            else cc.setUnderflow(0);
+            StringBuilder res = new StringBuilder(s.substring(1+count,16));
+            while (res.length()<16){
+                res.append(0);
+            }
+            this.IRR.setValue(Integer.parseInt(res.toString(),2));
+        }
+        else if(L_R==0 && A_L==1){
+            //Right & Logic
+            StringBuilder res = new StringBuilder(s.substring(0,16-count));
+            while(res.length()<16){
+                res.insert(0,0);
+            }
+            this.IRR.setValue(Integer.parseInt(res.toString(),2));
+        }
+        //else if(L_R==1 && A_L==1)
+        else{
+            //Left & Logic
+            StringBuilder res = new StringBuilder(s.substring(count,16));
+            while (res.length()<16){
+                res.append(0);
+            }
+            this.IRR.setValue(Integer.parseInt(res.toString(),2));
+        }
+    }
+    //this function is used to calculate Rotate and store the result in IRR
+    public void rotate(int content,int count, int L_R, int A_L,ConditionCode cc){
+        StringBuilder s = new StringBuilder(Integer.toBinaryString(content));
+        while (s.length()<16){
+            s.insert(0, "0");
+        }
+        if(A_L==0){
+            //Arithmetic
+            char sign = s.charAt(0);
+            //Underflow
+            if(sign == '1'){
+                cc.setUnderflow(1);
+            }
+            else {
+                cc.setUnderflow(0);
+            }
+            if(L_R==0){
+                //Right
+                StringBuilder res = new StringBuilder(s.substring(1,16-count));
+                res.insert(0,s.substring(16-count,16));
+                this.IRR.setValue(Integer.parseInt(res.insert(0,sign).toString(),2));
+            }
+            else{
+                //Left
+                StringBuilder res = new StringBuilder(s.substring(count+1,16));
+                res.append(s.substring(1,count+1));
+                this.IRR.setValue(Integer.parseInt(res.insert(0,sign).toString(),2));
+            }
+        }
+        else{
+            //Logic
+            if(L_R==0){
+                //Right
+                StringBuilder res = new StringBuilder(s.substring(0,16-count));
+                res.insert(0,s.substring(16-count,16));
+                this.IRR.setValue(Integer.parseInt(res.toString(),2));
+            }
+            else{
+                //Left
+                StringBuilder res = new StringBuilder(s.substring(count,16));
+                res.append(s.substring(0,count));
+                this.IRR.setValue(Integer.parseInt(res.toString(),2));
+            }
+        }
+    }
 }
