@@ -1,6 +1,6 @@
-import com.intellij.uiDesigner.core.GridConstraints;
-import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
+
+
+import Memory.Cache;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Locale;
 import java.io.File;
@@ -156,8 +157,10 @@ public class CiscGUI {
                             int data = Integer.parseInt(str.substring(5,9),16);
 
                             //TODO use Memory.SetMEM(address,data)
-                            Main.mem.setToMemory(address,data);
+                            Main.mem.setToCache(address,data); //first set to cache memory
+                            printCacheFile(); //prints cache to a file
                             UpdateGUI();
+
                             consoleTextArea.setText("File loaded, please click ss or run button to run the program");
                         }
 
@@ -443,6 +446,7 @@ public class CiscGUI {
                     Main.singleStep();
                 }
                 UpdateGUI();
+
             }
         });
     }
@@ -535,6 +539,7 @@ public class CiscGUI {
         UpdateGUI();
 
 
+
     }
 
     //Function prompts user to enter a character and will return the ascii value of the char entered
@@ -544,6 +549,31 @@ public class CiscGUI {
         int input = Integer.parseInt(inputString); 
         return input;
     }
+
+    //Prints a file with the cache information
+    private void printCacheFile() {
+
+
+        String cacheFile = "cacheFile.txt";
+        PrintWriter writer = null;
+
+        try {
+
+
+           writer = new PrintWriter(cacheFile);
+        }catch(FileNotFoundException e) {
+            e.printStackTrace();
+
+        }
+                writer.println("Tag " + " " + "Data");
+            for (Cache.CacheLine line : Main.mem.getCache().getCacheLines()) {
+                writer.println(line.getTag() + "   " + line.getData() );
+
+            }
+
+            writer.close();
+
+        }
 
 
 }

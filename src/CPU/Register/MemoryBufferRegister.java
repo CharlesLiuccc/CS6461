@@ -1,6 +1,7 @@
 package CPU.Register;
 
 import Memory.Memory;
+import Memory.Cache;
 
 /***
  * This is the class for Memory Buffer Register
@@ -21,7 +22,9 @@ public class MemoryBufferRegister extends Register{
        //System.out.println(this.getValue());
     }
 
-    public void storeToMem(MemoryAddressRegister mar, Memory mem){
+    //stores to cache
+    public void setToCache(MemoryAddressRegister mar, Memory mem){
         mem.setToMemory(mar.getValue(),this.getValue());
     }
+
 }
