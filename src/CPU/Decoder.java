@@ -308,26 +308,16 @@ public class Decoder {
 //                }
                 getGPR(this.R,R0,R1,R2,R3).setValue(alu.getIRRValue());
             }
-            //AMR, AIR
-            case 4,6 ->{
+            //AMR, SMR, AIR, SIR
+            case 4,5,6,7 ->{
                 if(alu.getIRRValue()>65535){
                     cc.setOverflow(1);
                 }
                 else cc.setOverflow(0);
-//                switch (this.R){
-//                    case 0 -> R0.setValue(alu.getIRRValue());
-//                    case 1 -> R1.setValue(alu.getIRRValue());
-//                    case 2 -> R2.setValue(alu.getIRRValue());
-//                    case 3 -> R3.setValue(alu.getIRRValue());
-//                }
-                getGPR(this.R,R0,R1,R2,R3).setValue(alu.getIRRValue());
-            }
-            //SMR, SIR
-            case 5,7 ->{
                 if(alu.getIRRValue()<0){
                     cc.setUnderflow(1);
                 }
-                else cc.setOverflow(0);
+                else cc.setUnderflow(0);
 //                switch (this.R){
 //                    case 0 -> R0.setValue(alu.getIRRValue());
 //                    case 1 -> R1.setValue(alu.getIRRValue());
@@ -336,6 +326,20 @@ public class Decoder {
 //                }
                 getGPR(this.R,R0,R1,R2,R3).setValue(alu.getIRRValue());
             }
+//            //SMR, SIR
+//            case 5,7 ->{
+//                if(alu.getIRRValue()<0){
+//                    cc.setUnderflow(1);
+//                }
+//                else cc.setOverflow(0);
+////                switch (this.R){
+////                    case 0 -> R0.setValue(alu.getIRRValue());
+////                    case 1 -> R1.setValue(alu.getIRRValue());
+////                    case 2 -> R2.setValue(alu.getIRRValue());
+////                    case 3 -> R3.setValue(alu.getIRRValue());
+////                }
+//                getGPR(this.R,R0,R1,R2,R3).setValue(alu.getIRRValue());
+//            }
             //STR, STX
             case 2,34 ->{
                 mbr.setValue(alu.getIRRValue());
@@ -404,7 +408,7 @@ public class Decoder {
             }
             //JCC
             case 10 ->{
-                if(cc.getValue()==1){
+                if(cc.getCC(this.R)==1){
                     pc.setValue(alu.getIARValue());
                 }
                 else pc.nextProgram();
