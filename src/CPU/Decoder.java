@@ -36,6 +36,7 @@ public class Decoder {
 
     //Component for I/O Instructions
     private int dev_id;
+    private int out_value;
 
 
     public Decoder(){
@@ -51,10 +52,15 @@ public class Decoder {
         this.L_R=-1;
         this.count=-1;
         this.dev_id=-1;
+        this.out_value=-1;
     }
 
     public int getOpcode() {
         return opcode;
+    }
+    //Get value to print out
+    public int getOut_value(){
+        return out_value;
     }
     //This function is used in Decoding
     public void decoding(InstructionRegister ir){
@@ -120,8 +126,8 @@ public class Decoder {
             case 8,9,10,11,12,14,15 ->{
                 alu.computeEA(this.IX,this.I,this.address,mem,X1,X2,X3);
             }
-            //RFS, MUL, DVD, TRR, AND, ORR, NOT, SRC, RRC, IN
-            case 13,16,17,18,19,20,21,25,26,49 ->{}
+            //RFS, MUL, DVD, TRR, AND, ORR, NOT, SRC, RRC, IN, OUT
+            case 13,16,17,18,19,20,21,25,26,49,50 ->{}
             // using switch statement in case to add more opcode
         }
     }
@@ -136,8 +142,8 @@ public class Decoder {
             case 1, 3, 33 -> {
                 alu.setIRR(mbr.getValue());
             }
-            //STR
-            case 2 -> {
+            //STR & OUT
+            case 2,50 -> {
                 switch (this.R) {
                     case 0 -> alu.setIRR(R0.getValue());
                     case 1 -> alu.setIRR(R1.getValue());
@@ -380,14 +386,18 @@ public class Decoder {
             case 19,20,21 ->{
                 getGPR(Rx,R0,R1,R2,R3).setValue(alu.getIRRValue());
             }
+            //OUT
+            case 50 ->{
+                this.out_value = alu.getIRRValue();
+            }
         }
     }
 
     //This is used in Determining Next Instruction step
     public void nextInstruction(ProgramCounter pc,ALU alu,ConditionCode cc,GeneralPurposeRegister R0, GeneralPurposeRegister R1, GeneralPurposeRegister R2,GeneralPurposeRegister R3){
         switch (this.opcode){
-            //LDR, STR, LDA, LDX, STX, AMR, SMR, AIR, SIR, MUL, DVD, TRR, AND, ORR, NOT, SRC, RRC, IN
-            case 1,2,3,33,34,4,5,6,7,16,17,18,19,20,21,25,26,49 ->{
+            //LDR, STR, LDA, LDX, STX, AMR, SMR, AIR, SIR, MUL, DVD, TRR, AND, ORR, NOT, SRC, RRC, IN, OUT
+            case 1,2,3,33,34,4,5,6,7,16,17,18,19,20,21,25,26,49,50 ->{
                 pc.nextProgram();
             }
             //JZ

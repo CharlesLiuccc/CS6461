@@ -72,6 +72,9 @@ public class Main {
                 decoder.nextInstruction(pc,alu,cc,gpr0,gpr1,gpr2,gpr3);
                 //pc.nextProgram();
             }
+            if(decoder.getOpcode() == 50){
+                theGui.Out_Instruction(decoder.getOut_value());
+            }
 
         }
 
