@@ -14,7 +14,7 @@ import java.util.*;
  * Memory can be set and fetched by MBR.
  * The initial size of memory is 2048 and can be expanded to 4069
  *
- * @author Charles, Christian A. Garcia
+ * @author Charles
  */
 
 public class Memory {
