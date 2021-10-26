@@ -45,7 +45,6 @@ public class Memory {
     public void MemoryExpansion(){
         this.memory = new int[4096];
         this.size=4096;
-
     }
 
     public int getSize() {
@@ -53,7 +52,7 @@ public class Memory {
     }
 
     public int[] getAllMemory() {
-        return memory;
+        return this.memory;
     }
 
 
@@ -68,9 +67,6 @@ public class Memory {
     public void resetMemory(){
         this.memory = new int[2048];
     }
-
-
-
 
     //Store directly into memory using address and value with memory simultaneously
     public void setToCache(int address,int value) {

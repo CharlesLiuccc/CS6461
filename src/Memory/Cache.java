@@ -64,10 +64,4 @@ public class Cache {
         this.cacheLines.addFirst(new CacheLine(address, value));
     }
 
-
-
-
-
-
-
 }

@@ -23,8 +23,10 @@ public class MemoryBufferRegister extends Register{
     }
 
     //stores to cache
+    //this function is used when we need to store the value in mbr to cache
     public void setToCache(MemoryAddressRegister mar, Memory mem){
-        mem.setToMemory(mar.getValue(),this.getValue());
+        //mem.setToMemory(mar.getValue(),this.getValue());
+        mem.setToCache(mar.getValue(),this.getValue());
     }
 
 }
