@@ -565,9 +565,9 @@ public class CiscGUI {
             e.printStackTrace();
 
         }
-                writer.println("Address " + "   " + "Data");
+                writer.printf("%-10s%2s%n","Address" ,"Data"); //Formats data labels
             for (Cache.CacheLine line : Main.mem.getCache().getCacheLines()) {
-                writer.println(line.getTag() + "     " + line.getData() );
+                writer.printf("%-10d%-2d%n",line.getTag(),line.getData() );//Formats data output
 
             }
 
