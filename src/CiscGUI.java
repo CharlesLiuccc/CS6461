@@ -105,6 +105,9 @@ public class CiscGUI {
     private JTextArea consoleTextArea;
     private JPanel consolePanel;
     private JScrollPane consoleScrollPane;
+    private JPanel outputPanel;
+    private JScrollPane outputScrollPane;
+    private JTextArea outputTextArea;
     private JTextField inputTextField;
     private JPanel inputPanel;
     private JLabel inputLabel;
@@ -548,6 +551,10 @@ public class CiscGUI {
         inputString = inputString.replaceAll("\\s+", "");
         int input = Integer.parseInt(inputString); 
         return input;
+    }
+
+    public void Out_Instruction(int out_value){
+        outputTextArea.append(out_value + "\n");
     }
 
     //Prints a file with the cache information
