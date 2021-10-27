@@ -21,98 +21,31 @@ public class Test {
     public static Decoder decoder = new Decoder();
     public static ALU alu = new ALU();
 
-   // public static void main(String[] args) {
-//        //STX Test success
-//        mem.setToMemory(6,43948); //101010 11 10 1 01100
-//
-//        x2.setValue(8);
-//        mem.setToMemory(20,14);
-//
-//        pc.setValue(6);
-
-//        mar.getFromPC(pc);
-//        mbr.getFromMem(mar,mem);
-//        ir.getFromMBR(mbr);
-//        decoder.decoding(alu,mem,ir,mar,mbr,x1,x2,x3);
-//        decoder.executing(alu,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
-//        decoder.depositing(alu,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
-
-//        System.out.println(mem.getFromMemory(14));
+    public static void main(String[] args) {
+         mem.setToMemory(6,27010);
+         mem.setToMemory(16,20);
+         mem.setToMemory(20,3);
+         x1.setValue(1);
+         gpr1.setValue(7);
+         gpr3.setValue(65533);
 
 
-//        //LDX Test success
-//        mem.setToMemory(6,42924);//101001 11 10 1 01100
-//        mem.setToMemory(12,28);
-//        mem.setToMemory(20,12);
-//
-//        x2.setValue(8);
-//
-//        pc.setValue(6);
-//        mar.getFromPC(pc);
-//        mbr.getFromMem(mar,mem);
-//        ir.getFromMBR(mbr);
-//        decoder.decoding(alu,mem,ir,mar,mbr,x1,x2,x3);
-//        decoder.executing(alu,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
-//        decoder.depositing(alu,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
-//        System.out.println(x3.getValue());
+         pc.setValue(6);
+         mar.getFromPC(pc);
+         mbr.getFromMem(mar,mem);
+         ir.getFromMBR(mbr);
+         decoder.decoding(ir);
+         decoder.fetching(alu,mem,mar,mbr,x1,x2,x3);
+         decoder.executing(alu,pc,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3,cc,-1);
+         decoder.depositing(alu,pc,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3,cc);
+         decoder.nextInstruction(pc,alu,cc,gpr0,gpr1,gpr2,gpr3);
+
+         System.out.println(pc.getValue());
+         //System.out.println(gpr0.getValue());
+         System.out.println(gpr1.getValue());
+         System.out.println(Integer.toBinaryString(gpr1.getValue()));
+         System.out.println(cc.getCC(1));
 
 
-
-
-//        //LDA Test success
-//        mem.setToMemory(6,3756);//000001 11 10 1 01100
-//      //  mem.setToMemory(12,28);
-//        mem.setToMemory(20,18);
-//
-//        x2.setValue(8);
-//
-//        pc.setValue(6);
-//        mar.getFromPC(pc);
-//        mbr.getFromMem(mar,mem);
-////        System.out.println(mbr.getValue());
-//        ir.getFromMBR(mbr);
-//        decoder.decoding(alu,mem,ir,mar,mbr,x1,x2,x3);
-//
-////        System.out.println(alu.getIARValue());
-////        System.out.println(mbr.getValue());
-//        decoder.executing(alu,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
-//        decoder.depositing(alu,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
-//        System.out.println(gpr2.getValue());
-
-
-//        //STR Test success
-//        mem.setToMemory(6,2572);
-//        gpr2.setValue(512);
-//        pc.setValue(6);
-
-//        mar.getFromPC(pc);
-//        mbr.getFromMem(mar,mem);
-//        ir.getFromMBR(mbr);
-//        decoder.decoding(alu,mem,ir,mar,mbr,x1,x2,x3);
-//        decoder.executing(alu,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
-//        decoder.depositing(alu,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
-//        System.out.println(mem.getFromMemory(12));
-
-
-
-        // LDR Test success
-//        mem.setToMemory(6,1964);//000001 11 10 1 01100
-//        mem.setToMemory(12,28);
-//        mem.setToMemory(20,12);
-//
-//        x2.setValue(8);
-//
-//        pc.setValue(6);
-//        mar.getFromPC(pc);
-//        mbr.getFromMem(mar,mem);
-//        //System.out.println(mbr.getValue());
-//        ir.getFromMBR(mbr);
-//        decoder.decoding(alu,mem,ir,mar,mbr,x1,x2,x3);
-////        System.out.println(alu.getIARValue());
-////        System.out.println(mbr.getValue());
-//        decoder.executing(alu,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
-//        decoder.depositing(alu,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3);
-//        System.out.println(gpr3.getValue());
-
-  //  }
+    }
 }

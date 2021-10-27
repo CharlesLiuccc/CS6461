@@ -220,12 +220,12 @@ public class Decoder {
                         //set cc overflow
                         cc.setOverflow(1);
 
-                        String res = Integer.toBinaryString(alu.getIRRValue());
+                        StringBuilder res = new StringBuilder(Integer.toBinaryString(alu.getIRRValue()));
                         while (res.length() < 32) {
-                            res = "0" + res;
+                            res.insert(0, "0");
                         }
-                        R0.setValue(Integer.parseInt(res.substring(0,15),2));
-                        R1.setValue(Integer.parseInt(res.substring(16,31),2));
+                        R0.setValue(Integer.parseInt(res.substring(0,16),2));
+                        R1.setValue(Integer.parseInt(res.substring(16,32),2));
                     }
                     else{
                         cc.setOverflow(0);
@@ -238,12 +238,12 @@ public class Decoder {
                     if(alu.getIRRValue() > 65535) {
                         //set cc overflow
                         cc.setOverflow(1);
-                        String res = Integer.toBinaryString(alu.getIRRValue());
+                        StringBuilder res = new StringBuilder(Integer.toBinaryString(alu.getIRRValue()));
                         while (res.length() < 32) {
-                            res = "0" + res;
+                            res.insert(0, "0");
                         }
-                        R2.setValue(Integer.parseInt(res.substring(0,15),2));
-                        R3.setValue(Integer.parseInt(res.substring(16,31),2));
+                        R2.setValue(Integer.parseInt(res.substring(0,16),2));
+                        R3.setValue(Integer.parseInt(res.substring(16,32),2));
                     }
                     else{
                         cc.setOverflow(0);
@@ -262,10 +262,11 @@ public class Decoder {
                     }
                     else {
                         cc.setDivZero(0);
-                        alu.arithmeticCalculate(R0.getValue(), R2.getValue(), 4);
-                        R0.setValue(alu.getIRRValue());
                         alu.arithmeticCalculate(R0.getValue(), R2.getValue(), 5);
                         R1.setValue(alu.getIRRValue());
+                        alu.arithmeticCalculate(R0.getValue(), R2.getValue(), 4);
+                        R0.setValue(alu.getIRRValue());
+
                     }
                 }
                 else if(this.Rx==2&&this.Ry==0){
@@ -275,10 +276,10 @@ public class Decoder {
                     }
                     else {
                         cc.setDivZero(0);
-                        alu.arithmeticCalculate(R2.getValue(), R0.getValue(), 4);
-                        R2.setValue(alu.getIRRValue());
                         alu.arithmeticCalculate(R2.getValue(), R0.getValue(), 5);
                         R3.setValue(alu.getIRRValue());
+                        alu.arithmeticCalculate(R2.getValue(), R0.getValue(), 4);
+                        R2.setValue(alu.getIRRValue());
                     }
                 }
                 else
