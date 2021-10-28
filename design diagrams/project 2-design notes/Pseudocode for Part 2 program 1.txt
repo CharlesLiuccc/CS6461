@@ -1,0 +1,82 @@
+1. Ask user for 20 Numbers -> Print Each Number to Output -> Ask user for a number -> Print that number 
+2. Search through the 20 numbers -> Print number that is closest to the number that was entered 
+
+(Instruction, Register, DEVID) 0 = keyboard 1 = Output Printe r
+
+Do this 20x: 
+	IN 0, 0 
+	OUT 0, 1 
+	STR 0, 0, 1000 (1000-1019) 
+
+Ask User for Number
+	IN 0, 0 
+	OUT 0, 1 
+	STR 0,0, Address (1020) 
+
+1021 = Distance 
+1022 = Final Answer 
+
+
+(1st Check) Find the distance between User's Number and Number from Memory (Would be nice to have an absolute value instruction) 
+ 
+	User Number in Register 0 
+	Move Number from Memory to Register 1 
+	Subtract(SMR) Memory from Register 0
+	Absolute Value on Register 0 
+	Register 0 Now holds the distance between User Number and Number from Memory 
+	Place Distance in Memory 
+	Place the number in Memory that will act as final answer 
+
+(Checking if memory number is closer to user Number) 
+	
+	Update User Number in Register 0 
+	Subtract(SMR) Memory from Register 0 
+	Absolute Value on Register 0 
+	Register 0 Now holds the distance between User Number and Number from Memory
+	IF distance < stored distance stored in memory: 
+		Update Distance in Memory 
+		Update the number in Memory that will act as final answer 
+	
+		
+
+
+
+SMR 0,0,1000 (User - Num) 
+ABS 0 (Distance) 
+LDR 1, 0, 1000 (Load Num from Mem) 
+STR 0, 0, 1021 (Store Distance) 
+STR 1, 0, 1022 (Store Number) 
+
+LDR 0,0 1020 (Update User Num) 
+SMR 0,0,1001 (User - Num) 
+Abs 0 (Distance) 
+LDR 1, 0, 1001 (Load Num from Mem) 
+LDR 2, 0, 1021 (Load Current Distance) 
+TLT 0,2 (Test Less Than. Similar to TRR, Will use condition Code) If the new Distance is less than the current Distance we will jump to function that will update Distance 
+						and final answer 
+JCC cc, x, address (If not condition code, we will skip over the next two instructions) 
+STR 0,0, 1021 
+STR 1,0,1022 
+
+(Jump Here if Distance is not smaller) 
+LDR 0,0 1020 (Update User Num) 
+SMR 0,0,1001 (User - Num) 
+Abs 0 (Distance) 
+LDR 1, 0, 1002 (Load Num from Mem) 
+LDR 2, 0, 1021 (Load Current Distance) 
+TLT 0,2 (Test less than. Compares New Distance to current distance) 
+JCC cc, x, address (If not condition code, we will skip over the next two instructions) 
+STR 0,0, 1021 
+STR 1,0,1022 
+
+(Jump here if distance is not smaller) 
+
+
+
+
+
+
+
+Possible Instructions to add: 
+Absolute Value instruction 
+Less than function for two registers 
