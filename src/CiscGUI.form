@@ -900,7 +900,7 @@
                 <properties>
                   <font name="Consolas" size="10" style="0"/>
                   <foreground color="-16777216"/>
-                  <text value="Output Text: "/>
+                  <text value=""/>
                 </properties>
               </component>
             </children>
