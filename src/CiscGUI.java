@@ -460,6 +460,7 @@ public class CiscGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        outputTextArea.setText("Output Console: \n");
     }
 
     public void UpdateGUI(){
