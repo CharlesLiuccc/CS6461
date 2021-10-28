@@ -480,6 +480,7 @@ public class CiscGUI {
         if(Main.HALT){
             consoleTextArea.setText("The program is finished!");
         }
+        outputTextArea.setText(Main.out_value);
     }
 
     private void PrintOperation(){
@@ -566,9 +567,6 @@ public class CiscGUI {
 
     }
 
-    public void Out_Instruction(int out_value){
-        outputTextArea.append(out_value + "\n");
-    }
 
     //Prints a file with the cache information
     private void printCacheFile() {

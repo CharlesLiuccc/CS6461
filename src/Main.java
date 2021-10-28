@@ -28,6 +28,7 @@ public class Main {
     public static boolean SingleStep = false;
     public static boolean HALT = false;
     public static int in_value = -1;
+    public static String out_value = "Output Console\n";
 
 
 
@@ -73,7 +74,7 @@ public class Main {
                 //pc.nextProgram();
             }
             if(decoder.getOpcode() == 50){
-                theGui.Out_Instruction(decoder.getOut_value());
+                out_value = out_value.concat(decoder.getOut_value() + "\n");
             }
 
         }
