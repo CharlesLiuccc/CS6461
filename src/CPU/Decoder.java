@@ -126,8 +126,8 @@ public class Decoder {
             case 8,9,10,11,12,14,15 ->{
                 alu.computeEA(this.IX,this.I,this.address,mem,X1,X2,X3);
             }
-            //RFS, MUL, DVD, TRR, AND, ORR, NOT, SRC, RRC, IN, OUT
-            case 13,16,17,18,19,20,21,25,26,49,50 ->{}
+            //AIR, SIR, RFS, MUL, DVD, TRR, AND, ORR, NOT, SRC, RRC, IN, OUT
+            case 6,7,13,16,17,18,19,20,21,25,26,49,50 ->{}
             // using switch statement in case to add more opcode
         }
     }
