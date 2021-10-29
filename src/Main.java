@@ -51,10 +51,12 @@ public class Main {
         if(!HALT) {
             //instruction fetch
             mar.getFromPC(pc);
+            System.out.println("PC:"+pc.getValue());
             mbr.getFromMem(mar, mem);
             ir.getFromMBR(mbr);
             //instruction decode & operand fetch
             decoder.decoding(ir);
+            System.out.println("opcode:"+decoder.getOpcode());
             //when decoder get the HALT instruction, it won't continue to run
             if (decoder.getOpcode()==0) {
                 Main.setHALT(true);

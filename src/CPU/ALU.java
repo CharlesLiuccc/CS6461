@@ -55,6 +55,7 @@ public class ALU {
     public void computeEA(int IX, int I,int address,Memory mem, IndexRegister X1,IndexRegister X2,IndexRegister X3){
         int EA = 0;
         this.setIAR(address);
+        //System.out.println(address);
         if(I==0){
             switch (IX) {
                 case 0 -> EA = this.IAR.getValue();
@@ -76,7 +77,7 @@ public class ALU {
             this.setIAR(2^12);
         }
         this.IAR.setValue(EA);
-//        System.out.println(EA);
+        System.out.println("EA:"+EA);
     }
 
     //this function is used to calculate with 2 operand and store the value to IRR
@@ -85,7 +86,10 @@ public class ALU {
     public void arithmeticCalculate(int operandA,int operandB, int operation){
         switch(operation){
             case 1 ->{this.IRR.setValue(operandA + operandB);}
-            case 2 ->{this.IRR.setValue(operandA - operandB);}
+            case 2 ->{
+                this.IRR.setValue(operandA - operandB);
+                //System.out.println(operandA+"-"+operandB);
+            }
             case 3 ->{this.IRR.setValue(operandA * operandB);}
             case 4 ->{this.IRR.setValue(operandA / operandB);}
             case 5 ->{this.IRR.setValue(operandA % operandB);}

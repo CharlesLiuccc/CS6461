@@ -70,7 +70,7 @@ public class Decoder {
         while(instruction.length()<16){
             instruction.insert(0, "0");
         }
-
+        System.out.println("Instruction:"+instruction);
         //decoding for the opcode
         this.opcode=Integer.parseInt(instruction.substring(0,6),2);
 
@@ -113,7 +113,7 @@ public class Decoder {
                 mbr.getFromMem(mar, mem);
             }
             // STR, STX
-            case 2,34 ->{
+            case 2, 34 ->{
                 alu.computeEA(this.IX, this.I, this.address,mem, X1, X2, X3);
                 mar.setValue(alu.getIARValue());
             }
@@ -367,6 +367,8 @@ public class Decoder {
             }
             //LDX
             case 33 ->{
+                //System.out.println("IRR:"+alu.getIRRValue());
+                //System.out.println("IX:"+IX);
                 switch (IX){
                     case 1 -> X1.setValue(alu.getIRRValue());
                     case 2 -> X2.setValue(alu.getIRRValue());
@@ -432,6 +434,7 @@ public class Decoder {
             }
             //JCC
             case 10 ->{
+                System.out.println("CC:"+cc.getCC(this.R));
                 if(cc.getCC(this.R)==1){
                     pc.setValue(alu.getIARValue());
                 }
