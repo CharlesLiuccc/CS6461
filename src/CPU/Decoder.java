@@ -363,7 +363,7 @@ public class Decoder {
             //STR, STX
             case 2,34 ->{
                 mbr.setValue(alu.getIRRValue());
-                mbr.setToCache(mar,mem);
+                mbr.setToMem(mar,mem);
             }
             //LDX
             case 33 ->{
