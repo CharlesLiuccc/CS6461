@@ -147,9 +147,10 @@ public class ALU {
             }
             else cc.setUnderflow(0);
             StringBuilder res = new StringBuilder(s.substring(1+count,16));
-            while (res.length()<16){
+            while (res.length()<15){
                 res.append(0);
             }
+            res.insert(0,sign);
             this.IRR.setValue(Integer.parseInt(res.toString(),2));
         }
         else if(L_R==0 && A_L==1){

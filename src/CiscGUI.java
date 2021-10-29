@@ -105,6 +105,9 @@ public class CiscGUI {
     private JTextArea consoleTextArea;
     private JPanel consolePanel;
     private JScrollPane consoleScrollPane;
+    private JPanel outputPanel;
+    private JScrollPane outputScrollPane;
+    private JTextArea outputTextArea;
     private JTextField inputTextField;
     private JPanel inputPanel;
     private JLabel inputLabel;
@@ -457,6 +460,7 @@ public class CiscGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        outputTextArea.setText("Output Console: \n");
     }
 
     public void UpdateGUI(){
@@ -476,6 +480,7 @@ public class CiscGUI {
         if(Main.HALT){
             consoleTextArea.setText("The program is finished!");
         }
+        outputTextArea.setText(Main.out_value);
     }
 
     private void PrintOperation(){
@@ -544,11 +549,24 @@ public class CiscGUI {
 
     //Function prompts user to enter a character and will return the ascii value of the char entered
     public int In_Instruction(){
+        int input=-1;
         String inputString = JOptionPane.showInputDialog("Enter in a number: ");
         inputString = inputString.replaceAll("\\s+", "");
-        int input = Integer.parseInt(inputString); 
+        if(isNumeric(inputString)){
+            input = Integer.parseInt(inputString);
+        }
+        else {
+            while (!isNumeric(inputString)) {
+                inputString = JOptionPane.showInputDialog("Only enter an int, not a string: ");
+                inputString = inputString.replaceAll("\\s+", "");
+            }
+            input = Integer.parseInt(inputString);
+        }
+
         return input;
+
     }
+
 
     //Prints a file with the cache information
     private void printCacheFile() {
@@ -573,7 +591,19 @@ public class CiscGUI {
 
             writer.close();
 
+    }
+
+    private boolean isNumeric(String str){
+        try{
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e){
+            return false;
         }
+    }
+
 
 
 }
+
+
