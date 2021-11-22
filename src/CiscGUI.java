@@ -567,6 +567,13 @@ public class CiscGUI {
 
     }
 
+    public String get_word_from_user(){
+        String word = JOptionPane.showInputDialog("Please Enter in a word with no spaces");
+        word = word.replace("\\s+", "");
+
+        return word;
+    }
+
 
     //Prints a file with the cache information
     private void printCacheFile() {
@@ -599,6 +606,88 @@ public class CiscGUI {
             return true;
         } catch (NumberFormatException e){
             return false;
+        }
+    }
+
+    public void read_file_and_print(int mem_location){
+
+        JFileChooser file_chooser = new JFileChooser();
+        if (file_chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        File file = file_chooser.getSelectedFile();
+        try {
+            Scanner read = new Scanner(file);
+            consoleTextArea.setText("File Contents:\n");
+
+            int mem_location_add = 0;
+
+            while(read.hasNextLine()) {
+                String str = read.nextLine();
+                consoleTextArea.append(str + "\n");
+
+                int string_length = str.length();
+                int iterations = string_length / 4; //4 chars per memory location
+
+                int ascii_word = 0;
+
+                int char_location = 0;
+
+
+                if (string_length < 4)
+                {
+                    for(int i = 0; i < string_length; i++)
+                    {
+                        ascii_word = (ascii_word << 8) | (int)str.charAt(i);
+                    }
+                    Main.mem.setToMemory(mem_location + mem_location_add, ascii_word);
+                    mem_location_add += 1;
+                }
+
+                else if (string_length % 4 == 0) //String is divisible by 4
+                {
+                    for (int i = 0; i < iterations; i++)
+                    {
+                        for (int j = 0; j < 4; j++)
+                        {
+                            ascii_word = (ascii_word << 8) | (int)str.charAt(j + char_location);
+                        }
+                        Main.mem.setToMemory(mem_location + mem_location_add, ascii_word);
+                        char_location += 4;
+                        mem_location_add += 1;
+                        ascii_word = 0;
+                    }
+                }
+
+                else //We have some extra chars we need to take care of
+                {
+                    int extra_chars = string_length % 4;
+
+                    for (int i = 0; i < iterations; i++)
+                    {
+                        for (int j = 0; j < 4; j++)
+                        {
+                            ascii_word = (ascii_word << 8) | (int)str.charAt(j + char_location);
+                            System.out.println(ascii_word);
+                        }
+                        Main.mem.setToMemory(mem_location + mem_location_add, ascii_word);
+                        char_location += 4;
+                        mem_location_add += 1;
+                        ascii_word = 0;
+                    }
+
+                    for(int i = 0; i < extra_chars; i++)
+                    {
+                        ascii_word = (ascii_word << 8) | (int)str.charAt(i + char_location);
+                    }
+                    Main.mem.setToMemory(mem_location + mem_location_add, ascii_word);
+                }
+
+
+            }
+
+        } catch (FileNotFoundException ex) {
+            consoleTextArea.setText("Invalid File: Please try another file");
         }
     }
 
