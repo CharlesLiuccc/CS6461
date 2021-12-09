@@ -546,7 +546,6 @@ public class CiscGUI {
 
 
     }
-
     //Function prompts user to enter a character and will return the ascii value of the char entered
     public int In_Instruction(){
         int input=-1;
@@ -556,15 +555,15 @@ public class CiscGUI {
             input = Integer.parseInt(inputString);
         }
         else {
-            while (!isNumeric(inputString)) {
-                inputString = JOptionPane.showInputDialog("Only enter an int, not a string: ");
-                inputString = inputString.replaceAll("\\s+", "");
-            }
-            input = Integer.parseInt(inputString);
+//            while (!isNumeric(inputString)) {
+//                inputString = JOptionPane.showInputDialog("Only enter an int, not a string: ");
+//                inputString = inputString.replaceAll("\\s+", "");
+//            }
+//            input = Integer.parseInt(inputString);
+            input = (int) inputString.charAt(0);
+            System.out.println("in:"+input);
         }
-
         return input;
-
     }
 
     public String get_word_from_user(){

@@ -530,7 +530,7 @@ public class Decoder {
                 String pathName = root+"\\paragraph.txt";
                 try(FileReader reader = new FileReader(pathName); BufferedReader br =new BufferedReader(reader)){
                     String line = br.readLine();
-                    int position = 1000;
+                    int position = 1100;
 //                    System.out.println(line);
                     while(line.length()!=0){
                         mem.setToMemory(position++,(int) line.charAt(0));
