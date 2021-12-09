@@ -3,6 +3,13 @@ package CPU;
 import CPU.Register.*;
 import Memory.Memory;
 
+//packages for file reading
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 
 
 /***
@@ -38,6 +45,9 @@ public class Decoder {
     private int dev_id;
     private int out_value;
 
+    //component for TRAP Instruction
+    private int trap_code;
+
 
     public Decoder(){
         this.label="Decoder";
@@ -53,6 +63,7 @@ public class Decoder {
         this.count=-1;
         this.dev_id=-1;
         this.out_value=-1;
+        this.trap_code = -1;
     }
 
     public int getOpcode() {
@@ -100,6 +111,10 @@ public class Decoder {
                 this.R = Integer.parseInt(instruction.substring(6,8),2);
                 this.dev_id = Integer.parseInt(instruction.substring(11,16),2);
             }
+            //decoding for Trap Instruction
+            case 24 ->{
+                this.trap_code = Integer.parseInt(instruction.substring(11,16),2);
+            }
         }
     }
 
@@ -126,14 +141,14 @@ public class Decoder {
             case 8,9,10,11,12,14,15 ->{
                 alu.computeEA(this.IX,this.I,this.address,mem,X1,X2,X3);
             }
-            //AIR, SIR, RFS, MUL, DVD, TRR, AND, ORR, NOT, SRC, RRC, IN, OUT
-            case 6,7,13,16,17,18,19,20,21,25,26,49,50 ->{}
+            //AIR, SIR, RFS, MUL, DVD, TRR, AND, ORR, NOT, SRC, RRC, IN, OUT, TRAP
+            case 6,7,13,16,17,18,19,20,21,25,26,49,50, 24 ->{}
             // using switch statement in case to add more opcode
         }
     }
 
     //This function is used in Execute the Operation step
-    public void executing(ALU alu,ProgramCounter pc,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3,ConditionCode cc, int in_value) {
+    public void executing(ALU alu,ProgramCounter pc,Memory mem,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3, IndexRegister X1,IndexRegister X2, IndexRegister X3,ConditionCode cc, int in_value) {
         switch (this.opcode) {
             case -1 -> {
                 //error
@@ -309,6 +324,11 @@ public class Decoder {
             case 49 -> {
                 alu.setIRR(in_value);
             }
+            //TRAP
+            case 24 ->{
+                mem.setToMemory(2,pc.getValue()+1);
+                trapTable(trap_code,pc,mem);
+            }
         }
     }
 
@@ -375,8 +395,8 @@ public class Decoder {
                     case 3 -> X3.setValue(alu.getIRRValue());
                 }
             }
-            //JZ, JNE, JCC, JMA, SOB, JGE, MUL, DVD, TRR
-            case 8,9,10,11,14,15,16,17,18 ->{}
+            //JZ, JNE, JCC, JMA, SOB, JGE, MUL, DVD, TRR, TRAP
+            case 8,9,10,11,14,15,16,17,18,24 ->{}
             //JSR
             case 12 ->{
                 R3.setValue(pc.getValue());
@@ -393,6 +413,7 @@ public class Decoder {
             case 50 ->{
                 this.out_value = alu.getIRRValue();
             }
+
         }
     }
 
@@ -476,6 +497,10 @@ public class Decoder {
                 }
                 else pc.nextProgram();
             }
+            //TRAP
+            //Trap instruction will do nothing at this step
+            //As the instructions in trap table will make pc to return
+            case 24 ->{}
         }
     }
 
@@ -495,5 +520,30 @@ public class Decoder {
             }
         }
         return null;
+    }
+
+    private void trapTable(int trap_code,ProgramCounter pc,Memory mem){
+        switch (trap_code){
+            //read paragraph from txt
+            case 0 ->{
+                String root = System.getProperty("user.dir");
+                String pathName = root+"\\paragraph.txt";
+                try(FileReader reader = new FileReader(pathName); BufferedReader br =new BufferedReader(reader)){
+                    String line = br.readLine();
+                    int position = 1000;
+//                    System.out.println(line);
+                    while(line.length()!=0){
+                        mem.setToMemory(position++,(int) line.charAt(0));
+                        line = line.substring(1,line.length());
+                    }
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+            //extern the trap table by more cases
+            //Attention: trap table is no more than 16 entries
+            case 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 ->{}
+        }
+        pc.setValue(mem.getFromMemory(2));
     }
 }
