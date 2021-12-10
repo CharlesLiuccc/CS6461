@@ -41,7 +41,7 @@ public class Test {
          decoder.nextInstruction(pc,alu,cc,gpr0,gpr1,gpr2,gpr3);
 
 //         System.out.println(pc.getValue());
-         System.out.println(mem.getFromMemory(1003));
+         System.out.println(mem.getFromMemory(1100));
 //         System.out.println(gpr1.getValue());
 //         System.out.println(Integer.toBinaryString(gpr1.getValue()));
 //         System.out.println(cc.getCC(1));

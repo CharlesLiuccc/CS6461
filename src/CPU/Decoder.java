@@ -528,6 +528,7 @@ public class Decoder {
             case 0 ->{
                 String root = System.getProperty("user.dir");
                 String pathName = root+"\\paragraph.txt";
+                System.out.println(pathName);
                 try(FileReader reader = new FileReader(pathName); BufferedReader br =new BufferedReader(reader)){
                     String line = br.readLine();
                     int position = 1100;
