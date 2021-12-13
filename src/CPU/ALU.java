@@ -1,9 +1,6 @@
 package CPU;
 
-import CPU.Register.ConditionCode;
-import CPU.Register.GeneralPurposeRegister;
-import CPU.Register.IndexRegister;
-import CPU.Register.Register;
+import CPU.Register.*;
 import Memory.Memory;
 
 /***
@@ -77,7 +74,7 @@ public class ALU {
             this.setIAR(2^12);
         }
         this.IAR.setValue(EA);
-        System.out.println("EA:"+EA);
+        //System.out.println("EA:"+EA);
     }
 
     //this function is used to calculate with 2 operand and store the value to IRR
@@ -217,6 +214,157 @@ public class ALU {
                 StringBuilder res = new StringBuilder(s.substring(count,16));
                 res.append(s.substring(0,count));
                 this.IRR.setValue(Integer.parseInt(res.toString(),2));
+            }
+        }
+    }
+    //this function is used to do the floating point calculation
+    public void fpCalculate(FloatingPointRegister fr, int operand, int operation){
+        int A_S = fr.getS();
+        int A_Ex = fr.getExponent();
+        int A_Ma = fr.getMantissa();
+        if(A_S == 1){
+            A_Ma = -A_Ma;
+        }
+        //convert operand
+        StringBuilder content = new StringBuilder(Integer.toBinaryString(operand));
+        while(content.length()<16){
+            content.insert(0, "0");
+        }
+        int B_Ex = Integer.parseInt(content.substring(2,8),2);;
+        int B_S=Integer.parseInt(content.substring(0,1),2);
+        int B_S_Ex = Integer.parseInt(content.substring(1,2),2);
+        if(B_S_Ex == 1){
+            B_Ex = -B_Ex;
+        }
+        int B_Ma = Integer.parseInt(content.substring(8,16),2);
+        if(B_S ==1){
+            B_Ma=-B_Ma;
+        }
+
+        while(A_Ex!=B_Ex){
+            if(A_Ex>B_Ex){
+                if(A_Ma>127){
+                    B_Ex=A_Ex;
+                    B_Ma=0;
+                    break;
+                }
+                A_Ex--;
+                A_Ma*=2;
+            }
+            else{
+                if(B_Ma>127){
+                    A_Ex=B_Ex;
+                    A_Ma=0;
+                    break;
+                }
+                B_Ex--;
+                B_Ma*=2;
+            }
+        }
+        System.out.println(A_Ex);
+        System.out.println(A_Ma);
+        System.out.println(B_Ex);
+        System.out.println(B_Ma);
+
+        String res_S = "0";
+        //the Mantissa of result
+        int Ma;
+        if(operation == 0){
+            //do the FADD
+            Ma = A_Ma+B_Ma;
+        }
+        else
+            Ma = A_Ma-B_Ma;
+        if(Ma<0){
+            res_S = "1";
+            Ma=-Ma;
+        }
+
+        if(Ma > 255){
+            Ma=Ma/2;
+            A_Ex++;
+        }
+        StringBuilder res_Ma = new StringBuilder(Integer.toBinaryString(Ma));
+        while(res_Ma.length()<8){
+            res_Ma.insert(0,"0");
+        }
+
+        //the exponent of result
+        StringBuilder res_Ex;
+        res_Ex = new StringBuilder();
+        if(A_Ex<0){
+            res_Ex.insert(0,1);
+            A_Ex = -A_Ex;
+        }
+        else res_Ex.insert(0,0);
+        res_Ex.insert(1,Integer.toBinaryString(A_Ex));
+        while(res_Ex.length()<7){
+            res_Ex.insert(1, "0");
+        }
+
+        System.out.println(res_Ex);
+        System.out.println(res_Ma);
+        int res_value = Integer.parseInt(res_S+res_Ex+res_Ma,2);
+        this.IRR.setValue(res_value);
+        System.out.println(res_value);
+        return;
+    }
+
+    public void convert(int F,int target){
+        if(F == 0){
+//            System.out.println("Alu:"+target);
+            this.IRR.setValue(target);
+        }
+        else if(F == 1){
+            int Ex = 0;
+            while(target > 255){
+                target = target/2;
+                Ex++;
+            }
+            String S="0";
+            StringBuilder res_Ex = new StringBuilder(Integer.toBinaryString(Ex));
+            StringBuilder res_Ma = new StringBuilder(Integer.toBinaryString(target));
+            while(res_Ex.length()<7){res_Ex.insert(0,0);}
+            while(res_Ma.length()<8){res_Ma.insert(0,0);}
+            this.IRR.setValue(Integer.parseInt(S+res_Ex+res_Ma,2));
+        }
+    }
+
+    public void vectorOperation(int addr,int fr,int operation,Memory mem){
+        StringBuilder content = new StringBuilder(Integer.toBinaryString(fr));
+        while(content.length()<16){
+            content.insert(0,0);
+        }
+        String S = content.substring(1,2);
+        int Ex = Integer.parseInt(content.substring(2,8),2);
+        int Ma = Integer.parseInt(content.substring(8,16),2);
+        System.out.println(Ex);
+        System.out.println(Ma);
+        double length;
+        if(S == "0"){
+            length=Ma;
+            while(Ex!=0){
+                length=length*2;
+                Ex--;
+            }
+        }else {
+            length=Ma;
+            while(Ex!=0){
+                length=length/2;
+                Ex--;
+            }
+        }
+        int vec1 =mem.getFromMemory(addr) ;
+        int vec2 = mem.getFromMemory(addr+1);
+        System.out.println(length);
+        if(operation == 0) {
+            for (int i = 0; i < length; i++) {
+                mem.setToMemory(vec1+i, mem.getFromMemory(vec1 + i) + mem.getFromMemory(vec2 + i));
+            }
+        }
+        else if(operation ==1){
+            for (int i = 0; i < length; i++) {
+                mem.setToMemory(vec1, mem.getFromMemory(vec1 + i) - mem.getFromMemory(vec2 + i));
             }
         }
     }

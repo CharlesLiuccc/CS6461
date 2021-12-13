@@ -17,6 +17,8 @@ public class Main {
     public static GeneralPurposeRegister gpr1 = new GeneralPurposeRegister(0);
     public static GeneralPurposeRegister gpr2 = new GeneralPurposeRegister(0);
     public static GeneralPurposeRegister gpr3 = new GeneralPurposeRegister(0);
+    public static FloatingPointRegister fr0 = new FloatingPointRegister(0);
+    public static FloatingPointRegister fr1 = new FloatingPointRegister(0);
     public static ConditionCode cc = new ConditionCode();
     public static Decoder decoder = new Decoder();
     public static ALU alu = new ALU();
@@ -34,7 +36,6 @@ public class Main {
 
     public static void main(String[] args) {
         theGui.CreateandShowGUI();
-
     }
 
     public static void setHALT(boolean HALT) {
@@ -68,9 +69,9 @@ public class Main {
                 //Locate and fetch the operand data
                 decoder.fetching(alu, mem, mar, mbr, x1, x2, x3);
                 //Execute
-                decoder.executing(alu, pc, mem, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3, cc, in_value);
+                decoder.executing(alu, pc, mem, mbr, gpr0, gpr1, gpr2, gpr3, fr0, fr1,x1, x2, x3, cc, in_value);
                 //Result store
-                decoder.depositing(alu, pc, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3, cc);
+                decoder.depositing(alu, pc, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, fr0, fr1, x1, x2, x3, cc);
                 //Next instruction
                 decoder.nextInstruction(pc,alu,cc,gpr0,gpr1,gpr2,gpr3);
                 //pc.nextProgram();
@@ -97,8 +98,8 @@ public class Main {
         ir.setValue(inst);
         decoder.decoding(ir);
         decoder.fetching(alu,mem,mar,mbr,x1,x2,x3);
-        decoder.executing(alu,pc,mem,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3,cc, in_value);
-        decoder.depositing(alu,pc,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,x1,x2,x3,cc);
+        decoder.executing(alu,pc,mem,mbr,gpr0,gpr1,gpr2,gpr3,fr0,fr1,x1,x2,x3,cc, in_value);
+        decoder.depositing(alu,pc,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,fr0,fr1,x1,x2,x3,cc);
         //decoder.nextInstruction(pc);
     }
 }
