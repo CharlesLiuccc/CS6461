@@ -445,7 +445,7 @@ public class CiscGUI {
         runButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                while(!Main.HALT){
+                while(Main.exStage_bool[0] || Main.exStage_bool[1] || Main.exStage_bool[2]){
                     Main.singleStep();
                 }
                 UpdateGUI();
