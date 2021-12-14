@@ -46,12 +46,6 @@ public class Main {
         exStage_bool[1] = false;
         exStage_bool[2] = false;
         theGui.CreateandShowGUI();
-<<<<<<< Updated upstream
-=======
-
-
-
->>>>>>> Stashed changes
     }
 
     public static void setHALT(boolean HALT) {
@@ -70,22 +64,9 @@ public class Main {
             if(exStage_bool[2]) {
                 ExecuteStage3(ins[2]);
             }
-<<<<<<< Updated upstream
-            if(!HALT) {
-                //Locate and fetch the operand data
-                decoder.fetching(alu, mem, mar, mbr, x1, x2, x3);
-                //Execute
-                decoder.executing(alu, pc, mem, mbr, gpr0, gpr1, gpr2, gpr3, fr0, fr1,x1, x2, x3, cc, in_value);
-                //Result store
-                decoder.depositing(alu, pc, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, fr0, fr1, x1, x2, x3, cc);
-                //Next instruction
-                decoder.nextInstruction(pc,alu,cc,gpr0,gpr1,gpr2,gpr3);
-                //pc.nextProgram();
-=======
 
             if(exStage_bool[1]) {
                 ExecuteStage2(ins[1]);
->>>>>>> Stashed changes
             }
 
             if(exStage_bool[0])
@@ -127,7 +108,7 @@ public class Main {
         ir.setValue(inst);
         decoder.decoding(ir);
         decoder.fetching(alu,mem,mar,mbr,x1,x2,x3);
-        decoder.executing(alu,pc,mem,mbr,gpr0,gpr1,gpr2,gpr3,fr0,fr1,x1,x2,x3,cc, in_value);
+        decoder.executing(alu,pc,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,fr0,fr1,x1,x2,x3,cc, in_value);
         decoder.depositing(alu,pc,mem,mar,mbr,gpr0,gpr1,gpr2,gpr3,fr0,fr1,x1,x2,x3,cc);
         //decoder.nextInstruction(pc);
     }
@@ -151,13 +132,12 @@ public class Main {
         }
 
         ins.decoder_fetch(mem, x1, x2, x3);
-        ins.decoder_execute(pc, mem, gpr0, gpr1, gpr2, gpr3, x1, x2,x3, in_value);
-        ins.decoder_depositing(pc, mem, gpr0, gpr1, gpr2, gpr3, x1, x2, x3);
+        ins.decoder_execute(pc, mem, gpr0, gpr1, gpr2, gpr3,fr0,fr1 ,x1, x2,x3, in_value);
+        ins.decoder_depositing(pc, mem, gpr0, gpr1, gpr2, gpr3,fr0,fr1,x1, x2, x3);
         ins.decoder_nextInstruction(pc, gpr0, gpr1, gpr2, gpr3);
 
         if (ins.get_decoder_opcode() == 50){
             out_value = out_value.concat(ins.get_decoder_out_value() + "\n");
         }
-
     }
 }

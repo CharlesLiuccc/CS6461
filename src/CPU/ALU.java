@@ -261,10 +261,10 @@ public class ALU {
                 B_Ma*=2;
             }
         }
-        System.out.println(A_Ex);
-        System.out.println(A_Ma);
-        System.out.println(B_Ex);
-        System.out.println(B_Ma);
+//        System.out.println(A_Ex);
+//        System.out.println(A_Ma);
+//        System.out.println(B_Ex);
+//        System.out.println(B_Ma);
 
         String res_S = "0";
         //the Mantissa of result
@@ -302,12 +302,11 @@ public class ALU {
             res_Ex.insert(1, "0");
         }
 
-        System.out.println(res_Ex);
-        System.out.println(res_Ma);
+//        System.out.println(res_Ex);
+//        System.out.println(res_Ma);
         int res_value = Integer.parseInt(res_S+res_Ex+res_Ma,2);
         this.IRR.setValue(res_value);
-        System.out.println(res_value);
-        return;
+//        System.out.println(res_value);
     }
 
     public void convert(int F,int target){
@@ -338,8 +337,8 @@ public class ALU {
         String S = content.substring(1,2);
         int Ex = Integer.parseInt(content.substring(2,8),2);
         int Ma = Integer.parseInt(content.substring(8,16),2);
-        System.out.println(Ex);
-        System.out.println(Ma);
+//        System.out.println(Ex);
+//        System.out.println(Ma);
         double length;
         if(S == "0"){
             length=Ma;
@@ -354,9 +353,9 @@ public class ALU {
                 Ex--;
             }
         }
-        int vec1 =mem.getFromMemory(addr) ;
+        int vec1 =mem.getFromMemory(addr);
         int vec2 = mem.getFromMemory(addr+1);
-        System.out.println(length);
+//        System.out.println(length);
         if(operation == 0) {
             for (int i = 0; i < length; i++) {
                 mem.setToMemory(vec1+i, mem.getFromMemory(vec1 + i) + mem.getFromMemory(vec2 + i));

@@ -17,6 +17,7 @@ public class InsPipe {
         ir = new InstructionRegister();
         decoder = new Decoder();
         alu = new ALU();
+        cc = new ConditionCode();
     }
 
     public void set_mar(ProgramCounter pc){
@@ -54,12 +55,12 @@ public class InsPipe {
         decoder.fetching(alu, mem, mar, mbr, x1, x2, x3);
     }
 
-    public void decoder_execute(ProgramCounter pc, Memory mem, GeneralPurposeRegister gpr0, GeneralPurposeRegister gpr1, GeneralPurposeRegister gpr2, GeneralPurposeRegister gpr3, IndexRegister x1, IndexRegister x2, IndexRegister x3, int in_value){
-        decoder.executing(alu, pc, mem, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3, cc, in_value);
+    public void decoder_execute(ProgramCounter pc, Memory mem, GeneralPurposeRegister gpr0, GeneralPurposeRegister gpr1, GeneralPurposeRegister gpr2, GeneralPurposeRegister gpr3,FloatingPointRegister fr0,FloatingPointRegister fr1, IndexRegister x1, IndexRegister x2, IndexRegister x3, int in_value){
+        decoder.executing(alu, pc, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, fr0,fr1,x1, x2, x3, cc, in_value);
     }
 
-    public void decoder_depositing(ProgramCounter pc, Memory mem, GeneralPurposeRegister gpr0, GeneralPurposeRegister gpr1, GeneralPurposeRegister gpr2, GeneralPurposeRegister gpr3, IndexRegister x1, IndexRegister x2, IndexRegister x3 ){
-        decoder.depositing(alu, pc, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, x1, x2, x3, cc);
+    public void decoder_depositing(ProgramCounter pc, Memory mem, GeneralPurposeRegister gpr0, GeneralPurposeRegister gpr1, GeneralPurposeRegister gpr2, GeneralPurposeRegister gpr3,FloatingPointRegister fr0,FloatingPointRegister fr1, IndexRegister x1, IndexRegister x2, IndexRegister x3 ){
+        decoder.depositing(alu, pc, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3,fr0,fr1, x1, x2, x3, cc);
     }
 
     public void decoder_nextInstruction(ProgramCounter pc, GeneralPurposeRegister gpr0, GeneralPurposeRegister gpr1, GeneralPurposeRegister gpr2, GeneralPurposeRegister gpr3){

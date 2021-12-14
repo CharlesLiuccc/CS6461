@@ -150,7 +150,7 @@ public class Decoder {
     }
 
     //This function is used in Execute the Operation step
-    public void executing(ALU alu,ProgramCounter pc,Memory mem,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3,FloatingPointRegister fr0,FloatingPointRegister fr1 ,IndexRegister X1,IndexRegister X2, IndexRegister X3,ConditionCode cc, int in_value) {
+    public void executing(ALU alu,ProgramCounter pc,Memory mem,MemoryAddressRegister mar,MemoryBufferRegister mbr, GeneralPurposeRegister R0,GeneralPurposeRegister R1, GeneralPurposeRegister R2, GeneralPurposeRegister R3,FloatingPointRegister fr0,FloatingPointRegister fr1 ,IndexRegister X1,IndexRegister X2, IndexRegister X3,ConditionCode cc, int in_value) {
         switch (this.opcode) {
             case -1 -> {
                 //error
@@ -252,14 +252,15 @@ public class Decoder {
             //VADD
             case 29 ->{
                 switch (this.R){
-                    case 0 ->{alu.vectorOperation(mbr.getValue(),fr0.getValue(),0,mem);}
-                    case 1 ->{alu.vectorOperation(mbr.getValue(),fr1.getValue(),0,mem);}
+                    case 0 ->{alu.vectorOperation(mar.getValue(),fr0.getValue(),0,mem);}
+                    case 1 ->{alu.vectorOperation(mar.getValue(),fr1.getValue(),0,mem);}
                 }
             }
+            //VSUB
             case 30 ->{
                 switch (this.R){
-                    case 0 ->{alu.vectorOperation(mbr.getValue(),fr0.getValue(),1,mem);}
-                    case 1 ->{alu.vectorOperation(mbr.getValue(),fr1.getValue(),1,mem);}
+                    case 0 ->{alu.vectorOperation(mar.getValue(),fr0.getValue(),1,mem);}
+                    case 1 ->{alu.vectorOperation(mar.getValue(),fr1.getValue(),1,mem);}
                 }
             }
             //CNVRT
