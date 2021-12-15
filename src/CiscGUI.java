@@ -445,7 +445,11 @@ public class CiscGUI {
         runButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                while(Main.exStage_bool[0] || Main.exStage_bool[1] || Main.exStage_bool[2]){
+                //This while is used in pipeline
+//                while(Main.exStage_bool[0] || Main.exStage_bool[1] || Main.exStage_bool[2]){
+//                    Main.pipeline_singleStep();
+//                }
+                while(!Main.HALT){
                     Main.singleStep();
                 }
                 UpdateGUI();

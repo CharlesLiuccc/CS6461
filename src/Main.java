@@ -39,12 +39,12 @@ public class Main {
 
 
     public static void main(String[] args) {
-        ins[0] = new InsPipe(mar,mbr,ir,cc,decoder,alu);
-        ins[1] = new InsPipe(mar,mbr,ir,cc,decoder,alu);
-        ins[2] = new InsPipe(mar,mbr,ir,cc,decoder,alu);
-        exStage_bool[0] = true;
-        exStage_bool[1] = false;
-        exStage_bool[2] = false;
+//        ins[0] = new InsPipe(mar,mbr,ir,cc,decoder,alu);
+//        ins[1] = new InsPipe(mar,mbr,ir,cc,decoder,alu);
+//        ins[2] = new InsPipe(mar,mbr,ir,cc,decoder,alu);
+//        exStage_bool[0] = true;
+//        exStage_bool[1] = false;
+//        exStage_bool[2] = false;
         theGui.CreateandShowGUI();
     }
 
@@ -59,6 +59,47 @@ public class Main {
      * @author Charles
      */
     public static void singleStep(){
+        if(!HALT) {
+            //instruction fetch
+            mar.getFromPC(pc);
+            System.out.println("PC:"+pc.getValue());
+            mbr.getFromMem(mar, mem);
+            ir.getFromMBR(mbr);
+            //instruction decode & operand fetch
+            decoder.decoding(ir);
+            System.out.println("opcode:"+decoder.getOpcode());
+            //when decoder get the HALT instruction, it won't continue to run
+            if (decoder.getOpcode()==0) {
+                Main.setHALT(true);
+            }
+            if(decoder.getOpcode() == 49){
+                in_value = theGui.In_Instruction();
+            }
+            if(!HALT) {
+                //Locate and fetch the operand data
+                decoder.fetching(alu, mem, mar, mbr, x1, x2, x3);
+                //Execute
+                decoder.executing(alu, pc, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, fr0, fr1 ,x1, x2, x3, cc, in_value);
+                //Result store
+                decoder.depositing(alu, pc, mem, mar, mbr, gpr0, gpr1, gpr2, gpr3, fr0, fr1, x1, x2, x3, cc);
+                //Next instruction
+                decoder.nextInstruction(pc,alu,cc,gpr0,gpr1,gpr2,gpr3);
+                //pc.nextProgram();
+            }
+            if(decoder.getOpcode() == 50){
+                out_value = out_value.concat(decoder.getOut_value() + "\n");
+            }
+            System.out.println("\n");
+        }
+
+    }
+
+
+    /***
+     * @author Brian
+     */
+
+    public static void pipeline_singleStep(){
         if(exStage_bool[0] || exStage_bool[1] || exStage_bool[2]) { //If we need to execute any of the pipeline
 
             if(exStage_bool[2]) {
