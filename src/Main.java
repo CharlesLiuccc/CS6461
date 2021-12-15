@@ -39,9 +39,9 @@ public class Main {
 
 
     public static void main(String[] args) {
-        ins[0] = new InsPipe();
-        ins[1] = new InsPipe();
-        ins[2] = new InsPipe();
+        ins[0] = new InsPipe(mar,mbr,ir,cc,decoder,alu);
+        ins[1] = new InsPipe(mar,mbr,ir,cc,decoder,alu);
+        ins[2] = new InsPipe(mar,mbr,ir,cc,decoder,alu);
         exStage_bool[0] = true;
         exStage_bool[1] = false;
         exStage_bool[2] = false;
@@ -83,12 +83,8 @@ public class Main {
 
             ins[2] = ins[1]; //Move each instruction down the pipeline to be executed
             ins[1] = ins[0];
-            ins[0] = new InsPipe();
+            ins[0] = new InsPipe(mar,mbr,ir,cc,decoder,alu);
         }
-
-
-
-
         System.out.println("\n");
 
 
@@ -120,6 +116,7 @@ public class Main {
     }
 
     public static void ExecuteStage2(InsPipe ins) {
+        System.out.println("PC:"+pc.getValue());
         ins.set_decoder(ins.get_ir());
         if (ins.get_decoder_opcode() == 0){
             exStage_bool[0] = false;

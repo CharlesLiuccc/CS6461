@@ -11,13 +11,14 @@ public class InsPipe {
     private Decoder decoder;
     private ALU alu;
 
-    public InsPipe() {
-        mbr = new MemoryBufferRegister();
-        mar = new MemoryAddressRegister();
-        ir = new InstructionRegister();
-        decoder = new Decoder();
-        alu = new ALU();
-        cc = new ConditionCode();
+    public InsPipe(MemoryAddressRegister MAR,MemoryBufferRegister MBR,InstructionRegister IR,ConditionCode CC,Decoder DE,ALU AL) {
+        this.mar=MAR;
+        this.mbr=MBR;
+        this.ir=IR;
+        this.cc = CC;
+        this.decoder=DE;
+        this.alu=AL;
+
     }
 
     public void set_mar(ProgramCounter pc){
